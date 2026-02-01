@@ -4,8 +4,6 @@ import requests
 API_update = "http://192.168.0.200:50000/update"
 API_alive = "http://192.168.0.200:50000/alive"
 API_execute = "http://192.168.0.200:50000/execute"
-API_call = "http://192.168.0.200:50000/call"
-
 
 payload = {
 
