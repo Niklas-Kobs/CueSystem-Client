@@ -13,6 +13,8 @@ h1 {
     margin: 0;
 }
 
+h2 { color: #666; font-weight: 500; margin-bottom: 20px; }
+
 h3 {
     font-size: 0.8rem;
     color: #333;
@@ -150,8 +152,6 @@ tr:nth-child(even) {
 .form-section {
     flex: 1; /* Beide Formulare teilen sich den Platz */
 }
-
-h2 { color: #666; font-weight: 500; margin-bottom: 20px; }
 
 /* Grid-System für die Inputs */
 .input-grid {
@@ -388,3 +388,31 @@ thead th:nth-child(2) { width: 19%; } /* ID */
 thead th:nth-child(3) { width: 19%; }  /* Name (nimmt den Rest) */
 thead th:nth-child(4) { width: 19%; } /* Raum */
 thead th:nth-child(5) { width: 150px; } /* Aktion */
+
+.POPUP {
+    border-radius: 20px;
+    border-width: 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 1000;
+
+}
+
+.POPUP::backdrop {
+    background-color: rgba(0, 0, 0, 0.7); 
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+}
+
+.call {
+    border: 2px solid #ffffff !important; 
+    color: rgb(0, 0, 0) !important;
+    animation: blinker 1.5s ease-in-out infinite !important;
+}
+
+@keyframes blinker {
+    0%   { background-color: #68b675; } 
+    50%  { background-color: #d2df99; }
+    100% { background-color: #68b675; }
+}
+
+.Headline_alert {color: #666; font-weight: 500; margin-bottom: 20px;}
