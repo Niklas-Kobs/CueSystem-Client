@@ -29,6 +29,7 @@ body {
 
 .container {
     max-width: 90%;
+    min-width: 1500px;
     margin: auto;
     background: white;
     padding: 2rem;
@@ -40,6 +41,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    table-layout: auto;
 }
 
 th, td {
@@ -63,12 +65,45 @@ th, td {
 
 /* Der Kasten um die Tabelle */
 .table-container {
+    width: 100%;       /* WICHTIG: Muss die volle Breite des Containers nutzen */
+    display: block;    /* Sicherstellen, dass es kein Inline-Element ist */
+    overflow-x: hidden; /* Verhindert hässliches seitliches Scrollen */
+    flex-grow: 1;
     height: 500px;          /* Festgelegte Höhe des Kastens */
-    overflow-y: auto;       /* Aktiviert vertikales Scrollen, wenn nötig */
+    overflow-y: scroll;       /* Aktiviert vertikales Scrollen, wenn nötig */
     border: 1px solid #ccc; /* Optional: Ein Rahmen wie im Bild */
     border-radius: 8px;
     background-color: #fff;
     position: relative;
+}
+
+.table-container::-webkit-scrollbar {
+    width: 20px;               /* Breite der Bar */
+    display: block;            /* Stellt sicher, dass sie gerendert wird */
+}
+
+/* Der Hintergrund der Scrollbar (Track) */
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;       /* Hellgrau, passend zu deinem Hintergrund */
+    border-radius: 10px;
+}
+
+/* Der bewegliche Schieber (Thumb) */
+.table-container::-webkit-scrollbar-thumb {
+    background: #5d6a8a;       /* Dein spezifisches Blau-Grau */
+    border-radius: 10px;       /* Abgerundet wie deine Buttons */
+    border: 2px solid #f1f1f1; /* Erzeugt einen kleinen Abstand zum Rand */
+}
+
+/* Farbe beim Drüberfahren (Hover) */
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #4a546d;       /* Etwas dunkler beim Hover */
+}
+
+/* 3. Für Firefox (unterstützt weniger Styling, aber dauerhafte Anzeige) */
+.table-container {
+    scrollbar-width: thin;
+    scrollbar-color: #5d6a8a #f1f1f1;
 }
 
 /* Fixiert die Überschriften (Header), damit sie beim Scrollen oben bleiben */
@@ -214,7 +249,12 @@ textarea { resize: none; }
 
 .btn-main:hover { 
     background-color: #858a96; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.144);
+}
+
+.btn-main:active { 
+    background-color: #9ca4b6; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.144);
 }
 
 .btn-2 {
@@ -230,7 +270,12 @@ textarea { resize: none; }
 
 .btn-2:hover { 
     background-color: #00000018; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.144);
+}
+
+.btn-2:active { 
+    background-color: #00000000; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.144);
 }
 
 .duration-input-container {
@@ -295,8 +340,51 @@ textarea { resize: none; }
 .btn-right { border-left: 1.5px solid #888; }
 
 .dashboard-footer {
+    width: 100%;
     display: flex;
-    justify-content: flex-end;
-    gap: 25px;
-    padding: 10px;
+    gap: 40%;
+    margin-top: 20px;
+    margin-bottom: -20px;
 }
+
+.dashboard-button-1 {
+    width: 30%;
+    display: flex;
+    vertical-align: left;
+    gap: 10px;
+}
+
+.dashboard-button-2 {
+    width: 30%;
+    display: flex;
+    vertical-align: right;
+    gap: 10px;
+}
+
+.patient-row {
+   table-layout: fixed; /* Zwingt die Spalten, sich an die 100% zu halten */
+   border-collapse: collapse;
+   width: 100%;       /* WICHTIG: Muss die volle Breite des Containers nutzen */
+   display: table-row;    /* Sicherstellen, dass es kein Inline-Element ist */
+   overflow-x: hidden; /* Verhindert hässliches seitliches Scrollen */
+}
+
+.action-group {
+    display: flex;
+    flex-direction: row;      /* Erzwingt nebeneinander (waagerecht) */
+    flex-wrap: nowrap;        /* Verhindert das Umbrechen nach unten */
+    gap: 5px;                 /* Abstand zwischen den Buttons */
+    justify-content: center;  /* Zentriert die Button-Gruppe in der Spalte */
+}
+
+/* Tabellen-Zelle für Aktionen */
+.action-cell {
+    min-width: 320px;         /* Breite so wählen, dass alle Buttons passen */
+    vertical-align: middle;
+}
+
+thead th:nth-child(1) { width: 19%; }  /* Position */
+thead th:nth-child(2) { width: 19%; } /* ID */
+thead th:nth-child(3) { width: 19%; }  /* Name (nimmt den Rest) */
+thead th:nth-child(4) { width: 19%; } /* Raum */
+thead th:nth-child(5) { width: 150px; } /* Aktion */

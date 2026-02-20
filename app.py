@@ -55,21 +55,53 @@ class WartelisteAPI:
 
     def move_entry(self, index, direction):
         with sqlite3.connect(DB_PATH) as conn:
-            cursor = conn.execute('SELECT id FROM queue ORDER BY id ASC')
-            ids = [row[0] for row in cursor.fetchall()]
+            conn.row_factory = sqlite3.Row
+            cursor = conn.execute('SELECT * FROM queue ORDER BY id ASC')
+            rows = cursor.fetchall()
             
             new_index = index - 1 if direction == 'up' else index + 1
-            if 0 <= new_index < len(ids):
-                # Hier tauschen wir die kompletten Datensätze basierend auf den IDs
-                id1, id2 = ids[index], ids[new_index]
+            
+            if 0 <= new_index < len(rows):
+                # Die beiden betroffenen Zeilen als Dictionary holen
+                row1 = dict(rows[index])
+                row2 = dict(rows[new_index])
                 
-                # Komplexer Tausch der Inhalte zweier Zeilen
-                conn.execute('CREATE TEMPORARY TABLE temp_row AS SELECT * FROM queue WHERE id = ?', (id1,))
-                conn.execute('UPDATE queue SET patient_id=(SELECT patient_id FROM queue WHERE id=?), name=(SELECT name FROM queue WHERE id=?), room=(SELECT room FROM queue WHERE id=?), doctor=(SELECT doctor FROM queue WHERE id=?) WHERE id=?', (id2, id2, id2, id2, id1))
-                conn.execute('UPDATE queue SET patient_id=(SELECT patient_id FROM temp_row), name=(SELECT name FROM temp_row), room=(SELECT room FROM temp_row), doctor=(SELECT doctor FROM temp_row) WHERE id=?', (id2,))
-                conn.execute('DROP TABLE temp_row')
+                # Die IDs behalten wir bei, aber wir tauschen alle anderen Inhalte
+                # Wir updaten Zeile 1 mit den Werten von Zeile 2
+                conn.execute('''
+                    UPDATE queue 
+                    SET patient_id=?, name=?, room=?, infos=?, doctor=?, duration=?
+                    WHERE id=?''', 
+                    (row2['patient_id'], row2['name'], row2['room'], row2['infos'], 
+                    row2['doctor'], row2['duration'], row1['id']))
+                
+                # Wir updaten Zeile 2 mit den Werten von Zeile 1
+                conn.execute('''
+                    UPDATE queue 
+                    SET patient_id=?, name=?, room=?, infos=?, doctor=?, duration=?
+                    WHERE id=?''', 
+                    (row1['patient_id'], row1['name'], row1['room'], row1['infos'], 
+                    row1['doctor'], row1['duration'], row2['id']))
+                
+                conn.commit()
                 return True
         return False
+
+    def get_patient_details(self, index):
+        """Holt die Details eines Patienten basierend auf dem Tabellen-Index aus der DB."""
+        try:
+            with sqlite3.connect(DB_PATH) as conn:
+                conn.row_factory = sqlite3.Row
+                # Wir nutzen LIMIT und OFFSET, um genau die Zeile zu finden, 
+                # die im Frontend an Position 'index' steht.
+                cursor = conn.execute('SELECT * FROM queue ORDER BY id ASC LIMIT 1 OFFSET ?', (index,))
+                row = cursor.fetchone()
+                if row:
+                    return dict(row) # Wandelt die SQLite-Row in ein JS-taugliches Dict um
+                return None
+        except Exception as e:
+            print(f"Datenbankfehler: {e}")
+            return None
 
 def main():
     api = WartelisteAPI()
