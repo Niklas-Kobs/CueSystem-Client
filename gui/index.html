@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queue System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Queue System</h1>
+        </header>
+
+        <main>
+        <div class="dashboard-header">
+            <section class="form-section">
+                <h2>Add new Patient</h2>
+                <div class="input-grid patient-grid">
+                    <input type="text" id="p_name" placeholder="Name eingeben..." class="rounded-input">
+                    <input type="text" id="p_id" placeholder="ID eingeben..." class="rounded-input">
+                    <input type="text" id="p_room" placeholder="Raum eingeben..." class="rounded-input">
+                    
+                    <textarea id="p_infos" placeholder="Infos eingeben..." class="rounded-input span-2-rows"></textarea>
+                    
+                    <input type="text" id="p_doctor" placeholder="Doctor eingeben..." class="rounded-input">
+                    <div class="duration-input-container">
+                        <h3>Dauer (min)</h3>
+                        <div class="number-input-container">
+                            <button type="button" onclick="changeValue_duration(-5)" class="num-btn btn-left">-</button>
+                            <input type="number" id="p_duration" value="0" class="num-input">
+                            <button type="button" onclick="changeValue_duration(5)" class="num-btn btn-right">+</button>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="button-group">
+                        <button class="btn-main" onclick="addToQueue()">Add to list</button>
+                        <button class="btn-2" onclick="addToPos()">Add to position</button>
+                        <div class="number-input-container">
+                            <button type="button" onclick="changeValue_pos(-1)" class="num-btn btn-left">-</button>
+                            <input type="number" id="p_pos" value="0" class="num-input">
+                            <button type="button" onclick="changeValue_pos(1)" class="num-btn btn-right">+</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h2>Post Message</h2>
+                <div class="input-grid message-grid">
+                    <input type="text" id="m_title" placeholder="Überschrift eingeben..." class="rounded-input">
+                    <select id="m_type" class="rounded-input">
+                        <option>Nachricht Auswählen</option>
+                    </select>
+                    
+                    <textarea id="m_text" placeholder="Text eingeben..." class="rounded-input span-all-cols message-area"></textarea>
+                    
+                    <div class="button-group span-all-cols">
+                        <button class="btn-main" onclick="postMsg()">Post</button>
+                        <button class="btn-2" onclick="removeMsg()">Remove</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+            <section class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Name</th>
+                            <th>ID</th>
+                            <th>Raum</th>
+                            <th>Aktion</th>
+                            <th>￭</th>
+                            <th><button class="btn-2">Aktualisieren</button></th>
+                        </tr>
+                    </thead>
+                    <tbody id="queueTableBody">
+                        </tbody>
+                </table>
+            </main>
+        </main>
+            <div class="dashboard-footer">
+            <th><button class="btn-2">Aktualisieren</button></th>
+            <th><button class="btn-2">Aktualisieren</button></th>
+            <th><button class="btn-2">Aktualisieren</button></th>
+            <th><button class="btn-2">Aktualisieren</button></th>
+            </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
