@@ -136,7 +136,10 @@ function call(index) {
         }
     });
     } else {
-        alert("Nur die ersten 5 Patienten können angerufen werden.");
+        document.getElementById('Headline_alert').innerText = 'Ups!';
+        document.getElementById('Message_alert').innerText = 'Es können nur die ersten 5 Patienten angerufen werden.';
+        openAlert_Popup();
+        return;
     }
 }
 
@@ -267,4 +270,11 @@ function applyTemplate() {
         subjectField.value = templates[selectedValue].subject;
         messageField.value = templates[selectedValue].text;
     }
+}
+
+function refresh() {
+    window.pywebview.api.refresh().then(function(response) {
+        if (response) {
+            closePopup_Opt();
+    }});
 }

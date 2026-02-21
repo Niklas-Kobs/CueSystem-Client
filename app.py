@@ -60,14 +60,12 @@ class WartelisteAPI:
                 cursor = conn.execute('SELECT * FROM queue ORDER BY id ASC')
                 patients = [dict(row) for row in cursor.fetchall()]
 
-                # Ziel-Index bestimmen
                 new_index = index - 1 if direction == 'up' else index + 1
 
                 if 0 <= new_index < len(patients):
-                    # Die kompletten Dicts tauschen (inklusive is_called!)
+                    
                     patients[index], patients[new_index] = patients[new_index], patients[index]
 
-                    # Tabelle leeren und neu befüllen
                     conn.execute('DELETE FROM queue')
                     conn.executemany('''
                         INSERT INTO queue (patient_id, name, room, infos, doctor, duration, is_called)
@@ -119,11 +117,9 @@ class WartelisteAPI:
         try:
             with sqlite3.connect(DB_PATH) as conn:
                 conn.row_factory = sqlite3.Row
-                # 1. Alle aktuellen Daten holen
                 cursor = conn.execute('SELECT * FROM queue ORDER BY id ASC')
                 patients = [dict(row) for row in cursor.fetchall()]
 
-                # 2. Neues Element für das Einfügen vorbereiten
                 new_patient = {
                     'patient_id': data['id'],
                     'name': data['name'],
@@ -133,14 +129,9 @@ class WartelisteAPI:
                     'duration': data['duration']
                 }
 
-                # 3. An der Zielposition in die Liste einfügen
-                # Falls target_index zu groß ist, wird es automatisch ans Ende gesetzt
                 patients.insert(int(target_index), new_patient)
 
-                # 4. Die alte Tabelle leeren
                 conn.execute('DELETE FROM queue')
-
-                # 5. Alle Patienten in der neuen Reihenfolge wieder einfügen
                 conn.executemany('''
                     INSERT INTO queue (patient_id, name, room, infos, doctor, duration)
                     VALUES (:patient_id, :name, :room, :infos, :doctor, :duration)
@@ -168,11 +159,8 @@ class WartelisteAPI:
     def toggle_call_status(self, index):
         try:
             with sqlite3.connect(DB_PATH) as conn:
-                # Wir holen alle IDs in der aktuellen Reihenfolge
                 cursor = conn.execute('SELECT id, is_called FROM queue ORDER BY id ASC')
                 rows = cursor.fetchall()
-                
-                # Identifiziere die ID des Patienten am jeweiligen Index
                 target_id = rows[index][0]
                 new_status = 1 if rows[index][1] == 0 else 0
                 
@@ -184,6 +172,68 @@ class WartelisteAPI:
             return False
     def open_external_link(self, url):
         webbrowser.open(url)
+    
+    def refresh(self):
+        rows = []
+        print("Refresh-Funktion aufgerufen")
+        try:
+            with sqlite3.connect('warteliste.db') as conn:
+                conn.row_factory = sqlite3.Row
+                cursor = conn.execute('SELECT * FROM queue ORDER BY id ASC LIMIT 5')
+                for patient in cursor.fetchall():
+                    rows.append(dict(patient))
+                WNR_1 = rows[0]['name'] if len(rows) > 0 else "---"
+                Timeestimate_1 = rows[0]['duration'] if len(rows) > 0 else "---"
+                Status_1 = "Called" if rows[0]['is_called'] == 1 else "Waiting" if len(rows) > 0 else "---"
+                call_1 = rows[0]['is_called'] == 1 if len(rows) > 0 else False
+                WNR_2 = rows[1]['name'] if len(rows) > 1 else "---"
+                Timeestimate_2 = rows[1]['duration'] if len(rows) > 1 else "---"
+                Status_2 = "Called" if rows[1]['is_called'] == 1 else "Waiting" if len(rows) > 1 else "---"
+                call_2 = rows[1]['is_called'] == 1 if len(rows) > 1 else False
+                WNR_3 = rows[2]['name'] if len(rows) > 2 else "---"
+                Timeestimate_3 = rows[2]['duration'] if len(rows) > 2 else "---"
+                Status_3 = "Called" if rows[2]['is_called'] == 1 else "Waiting" if len(rows) > 2 else "---"
+                call_3 = rows[2]['is_called'] == 1 if len(rows) > 2 else False
+                WNR_4 = rows[3]['name'] if len(rows) > 3 else "---"
+                Timeestimate_4 = rows[3]['duration'] if len(rows) > 3 else "---"
+                Status_4 = "Called" if rows[3]['is_called'] == 1 else "Waiting" if len(rows) > 3 else "---"
+                call_4 = rows[3]['is_called'] == 1 if len(rows) > 3 else False
+                WNR_5 = rows[4]['name'] if len(rows) > 4    else "---"
+                Timeestimate_5 = rows[4]['duration'] if len(rows) > 4 else "---"
+                Status_5 = "Called" if rows[4]['is_called'] == 1 else "Waiting" if len(rows) > 4 else "---"
+                call_5 = rows[4]['is_called'] == 1 if len(rows) > 4 else False
+                payload = {
+
+                        "WNR_1": WNR_1,
+                        "Timeestimate_1": Timeestimate_1,
+                        "Status_1": Status_1,
+                        "call_1": call_1,
+
+                        "WNR_2": WNR_2,
+                        "Timeestimate_2": Timeestimate_2,
+                        "Status_2": Status_2,
+                        "call_2": call_2,
+
+                        "WNR_3": WNR_3,
+                        "Timeestimate_3": Timeestimate_3,
+                        "Status_3": Status_3,
+                        "call_3": call_3,
+
+                        "WNR_4": WNR_4,
+                        "Timeestimate_4": Timeestimate_4,
+                        "Status_4": Status_4,
+                        "call_4": call_4,
+
+                        "WNR_5": WNR_5,
+                        "Timeestimate_5": Timeestimate_5,
+                        "Status_5": Status_5,
+                        "call_5": call_5
+                }
+            print("Daten erfolgreich aus der DB gelesen:", payload)
+            return True
+        except Exception as e:
+            print(f"Fehler beim Auslesen: {e}")
+            return False
 
 def main():
     api = WartelisteAPI()
