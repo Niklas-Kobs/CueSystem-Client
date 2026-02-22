@@ -2,10 +2,15 @@ import os
 import sqlite3
 import webbrowser
 import webview
+import requests
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 HTML_FILE = os.path.join(BASE_DIR, 'gui', 'index.html')
 DB_PATH = os.path.join(BASE_DIR, 'warteliste.db')
+
+API_update = "http://192.168.0.200:55000/update"
+API_alive = "http://192.168.0.200:55000/alive"
+API_execute = "http://192.168.0.200:55000/execute"
 
 class WartelisteAPI:
     def __init__(self):
@@ -182,26 +187,92 @@ class WartelisteAPI:
                 cursor = conn.execute('SELECT * FROM queue ORDER BY id ASC LIMIT 5')
                 for patient in cursor.fetchall():
                     rows.append(dict(patient))
-                WNR_1 = rows[0]['name'] if len(rows) > 0 else "---"
+
+                WNR_1 = rows[0]['patient_id'] if len(rows) > 0 else "---"
                 Timeestimate_1 = rows[0]['duration'] if len(rows) > 0 else "---"
-                Status_1 = "Called" if rows[0]['is_called'] == 1 else "Waiting" if len(rows) > 0 else "---"
-                call_1 = rows[0]['is_called'] == 1 if len(rows) > 0 else False
-                WNR_2 = rows[1]['name'] if len(rows) > 1 else "---"
+                Status_1 = rows[0]['is_called'] if len(rows) > 0 else "---"
+                call_1 = rows[0]['is_called'] if len(rows) > 0 else None
+
+                WNR_2 = rows[1]['patient_id'] if len(rows) > 1 else "---"
                 Timeestimate_2 = rows[1]['duration'] if len(rows) > 1 else "---"
-                Status_2 = "Called" if rows[1]['is_called'] == 1 else "Waiting" if len(rows) > 1 else "---"
-                call_2 = rows[1]['is_called'] == 1 if len(rows) > 1 else False
-                WNR_3 = rows[2]['name'] if len(rows) > 2 else "---"
+                Status_2 = rows[1]['is_called'] if len(rows) > 1 else "---"
+                call_2 = rows[1]['is_called'] if len(rows) > 1 else None
+
+                WNR_3 = rows[2]['patient_id'] if len(rows) > 2 else "---"
                 Timeestimate_3 = rows[2]['duration'] if len(rows) > 2 else "---"
-                Status_3 = "Called" if rows[2]['is_called'] == 1 else "Waiting" if len(rows) > 2 else "---"
-                call_3 = rows[2]['is_called'] == 1 if len(rows) > 2 else False
-                WNR_4 = rows[3]['name'] if len(rows) > 3 else "---"
+                Status_3 = rows[2]['is_called'] if len(rows) > 2 else "---"
+                call_3 = rows[2]['is_called'] if len(rows) > 2 else None
+
+                WNR_4 = rows[3]['patient_id'] if len(rows) > 3 else "---"
                 Timeestimate_4 = rows[3]['duration'] if len(rows) > 3 else "---"
-                Status_4 = "Called" if rows[3]['is_called'] == 1 else "Waiting" if len(rows) > 3 else "---"
-                call_4 = rows[3]['is_called'] == 1 if len(rows) > 3 else False
-                WNR_5 = rows[4]['name'] if len(rows) > 4    else "---"
+                Status_4 = rows[3]['is_called'] if len(rows) > 3 else "---"
+                call_4 = rows[3]['is_called'] if len(rows) > 3 else None
+
+                WNR_5 = rows[4]['patient_id'] if len(rows) > 4    else "---"
                 Timeestimate_5 = rows[4]['duration'] if len(rows) > 4 else "---"
-                Status_5 = "Called" if rows[4]['is_called'] == 1 else "Waiting" if len(rows) > 4 else "---"
-                call_5 = rows[4]['is_called'] == 1 if len(rows) > 4 else False
+                Status_5 = rows[4]['is_called'] if len(rows) > 4 else "---"
+                call_5 = rows[4]['is_called'] if len(rows) > 4 else None
+
+                if Status_1 == 1:
+                    Status_1 = "gerufen"
+                elif Status_1 == 0:
+                    Status_1 = "wartend"
+                else:
+                    Status_1 = "---"
+
+                if Status_2 == 1:
+                    Status_2 = "gerufen"
+                elif Status_2 == 0:
+                    Status_2 = "wartend"
+                else:                    
+                    Status_2 = "---"
+                
+                if Status_3 == 1:
+                    Status_3 = "gerufen"
+                elif Status_3 == 0:
+                    Status_3 = "wartend"
+                else:                    
+                    Status_3 = "---"
+
+                if Status_4 == 1:
+                    Status_4 = "gerufen"
+                elif Status_4 == 0:
+                    Status_4 = "wartend"
+                else:                    
+                    Status_4 = "---"
+
+                if Status_5 == 1:
+                    Status_5 = "gerufen"
+                elif Status_5 == 0:
+                    Status_5 = "wartend"
+                else:                    
+                    Status_5 = "---"
+
+                if call_1 == 1:
+                    call_1 = True
+                else:                   
+                    call_1 = None
+
+                if call_2 == 1:
+                    call_2 = True
+                else:                   
+                    call_2 = None
+
+                if call_3 == 1:
+                    call_3 = True
+                else:                   
+                    call_3 = None
+
+                if call_4 == 1:
+                    call_4 = True
+                else:                   
+                    call_4 = None
+
+                if call_5 == 1:
+                    call_5 = True
+                else:                   
+                    call_5 = None
+
                 payload = {
 
                         "WNR_1": WNR_1,
@@ -227,9 +298,20 @@ class WartelisteAPI:
                         "WNR_5": WNR_5,
                         "Timeestimate_5": Timeestimate_5,
                         "Status_5": Status_5,
-                        "call_5": call_5
+                        "call_5": call_5,
+
+                        "call_6": None,
+                        "POP_H": "---",
+                        "POP_T": "---"
                 }
             print("Daten erfolgreich aus der DB gelesen:", payload)
+            
+            try:
+                response_update = requests.post(API_update, json=payload)
+                print(response_update.json())
+            except Exception as e:
+                print(f"Fehler beim Senden der Anfrage: {e}")
+
             return True
         except Exception as e:
             print(f"Fehler beim Auslesen: {e}")
