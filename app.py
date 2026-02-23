@@ -9,6 +9,7 @@ HTML_FILE = os.path.join(BASE_DIR, 'gui', 'index.html')
 DB_PATH = os.path.join(BASE_DIR, 'warteliste.db')
 
 API_update = "http://192.168.0.200:55000/update"
+API_Msg = "http://192.168.0.200:55000/message"
 API_alive = "http://192.168.0.200:55000/alive"
 API_execute = "http://192.168.0.200:55000/execute"
 
@@ -123,6 +124,7 @@ class WartelisteAPI:
             with sqlite3.connect(DB_PATH) as conn:
                 conn.row_factory = sqlite3.Row
                 cursor = conn.execute('SELECT * FROM queue ORDER BY id ASC')
+                # Hier laden wir die existierenden Patienten inklusive ihres is_called-Status
                 patients = [dict(row) for row in cursor.fetchall()]
 
                 new_patient = {
@@ -131,15 +133,18 @@ class WartelisteAPI:
                     'room': data['room'],
                     'infos': data['infos'],
                     'doctor': data['doctor'],
-                    'duration': data['duration']
+                    'duration': data['duration'],
+                    'is_called': 0  # Ein brandneuer Patient ist standardmäßig nicht im Call
                 }
 
                 patients.insert(int(target_index), new_patient)
 
                 conn.execute('DELETE FROM queue')
+                
+                # WICHTIG: is_called muss im SQL-Befehl stehen!
                 conn.executemany('''
-                    INSERT INTO queue (patient_id, name, room, infos, doctor, duration)
-                    VALUES (:patient_id, :name, :room, :infos, :doctor, :duration)
+                    INSERT INTO queue (patient_id, name, room, infos, doctor, duration, is_called)
+                    VALUES (:patient_id, :name, :room, :infos, :doctor, :duration, :is_called)
                 ''', patients)
                 
                 conn.commit()
@@ -315,6 +320,102 @@ class WartelisteAPI:
             return True
         except Exception as e:
             print(f"Fehler beim Auslesen: {e}")
+            return False
+        
+    def Call_6(self):
+        try:
+            payload = {"exe": 1}
+            response_update = requests.post(API_execute, json=payload)
+            print(response_update.json())
+            return True
+        except Exception as e:
+            print(f"Fehler beim Senden der Anfrage: {e}")
+            return False
+    
+    def send_message(self, subject, message):
+        try:
+            if not subject or not message:
+                print("Betreff und Nachricht dürfen nicht leer sein.")
+                return False
+
+            if subject == "remove":
+                payload = {"call_6": None,"POP_H": "---", "POP_T": "---"}
+            else:
+                payload = {"call_6": True,"POP_H": subject, "POP_T": message}
+
+            response = requests.post(API_Msg, json=payload)
+            print(response.json())
+            return True
+        except Exception as e:
+            print(f"Fehler beim Senden der Nachricht: {e}")
+            return False
+    
+    def move_to_end(self, index):
+        try:
+            # Sicherheits-Check: Ist index vorhanden?
+            if index is None:
+                print("Fehler: Index ist None")
+                return False
+                
+            index = int(index) # Sicherstellen, dass es eine Zahl ist
+
+            with sqlite3.connect(DB_PATH) as conn:
+                conn.row_factory = sqlite3.Row
+                cursor = conn.execute('SELECT * FROM queue ORDER BY id ASC')
+                patients = [dict(row) for row in cursor.fetchall()]
+
+                # Prüfen, ob der Index innerhalb der Liste liegt
+                if 0 <= index < len(patients):
+                    target_patient = patients.pop(index)
+                    patients.append(target_patient)
+
+                    conn.execute('DELETE FROM queue')
+                    conn.executemany('''
+                        INSERT INTO queue (patient_id, name, room, infos, doctor, duration, is_called)
+                        VALUES (:patient_id, :name, :room, :infos, :doctor, :duration, :is_called)
+                    ''', patients)
+                    
+                    conn.commit()
+                    return True
+                else:
+                    print(f"Index {index} außerhalb der Reichweite (Länge: {len(patients)})")
+                    return False
+        except Exception as e:
+            print(f"Fehler beim Verschieben ans Ende: {e}")
+            return False
+        
+    def move_to_top(self, index):
+        try:
+            # Sicherheits-Check für None oder falsche Typen
+            if index is None:
+                return False
+                
+            index = int(index)
+
+            with sqlite3.connect(DB_PATH) as conn:
+                conn.row_factory = sqlite3.Row
+                cursor = conn.execute('SELECT * FROM queue ORDER BY id ASC')
+                patients = [dict(row) for row in cursor.fetchall()]
+
+                if 0 <= index < len(patients):
+                    # 1. Patienten aus der Liste nehmen
+                    target_patient = patients.pop(index)
+                    
+                    # 2. Ganz vorne (Index 0) wieder einfügen
+                    patients.insert(0, target_patient)
+
+                    # 3. Datenbank aktualisieren (Tabelle neu schreiben)
+                    conn.execute('DELETE FROM queue')
+                    conn.executemany('''
+                        INSERT INTO queue (patient_id, name, room, infos, doctor, duration, is_called)
+                        VALUES (:patient_id, :name, :room, :infos, :doctor, :duration, :is_called)
+                    ''', patients)
+                    
+                    conn.commit()
+                    return True
+                return False
+        except Exception as e:
+            print(f"Fehler beim Verschieben nach oben: {e}")
             return False
 
 def main():
