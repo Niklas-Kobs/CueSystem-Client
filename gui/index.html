@@ -69,7 +69,7 @@
                     <textarea id="m_text" placeholder="Text eingeben..." class="rounded-input span-all-cols message-area"></textarea>
                     
                     <div class="button-group span-all-cols">
-                        <button class="btn-main" onclick="postMsg()">Post</button>
+                        <button class="btn-main" onclick="sndMsg()">Post</button>
                         <button class="btn-2" onclick="removeMsg()">Remove</button>
                     </div>
                 </div>
@@ -99,7 +99,7 @@
                     <th><button class="btn-main" onclick="clearAll()">Clear all</button></th>
                 </div>
                 <div class="dashboard-button-2">
-                    <th><button class="btn-2">Call</button></th>
+                    <th><button class="btn-2" onclick="Call_6()">Call</button></th>
                     <th><button class="btn-main" onclick="refresh()">Aktualisieren</button></th>
                 </div>
             </div>
@@ -170,6 +170,16 @@
             <span id="Message_alert" class="Message_alert">---</span>
             <div class="button-group" style="justify-content: center; gap: 20px; margin-top: 20px;">
                 <button class="btn-main" onclick="closeAlert_Popup()">Verstanden</button>
+            </div>
+        </div>
+    </dialog>
+
+    <dialog id="POPUP_Web" class="POPUP" style="width: 90%; height: 90%;">
+        <div style="height: 100%; display: flex; flex-direction: column;">
+            <iframe id="api_frame" src="about:blank" style="width: 100%; height: 100%;"></iframe>
+            <div class="Queue-button">
+                <button class="btn-main" onclick="closeWebPopup()">Schließen</button>
+                <button class="btn-2" onclick="openQueueinBrowser()">In Browser öffnen</button>
             </div>
         </div>
     </dialog>

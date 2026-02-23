@@ -25,6 +25,8 @@ function updateTable() {
                                     <button class="btn-main" onclick="removeFromQueue(${index})">remove</button>
                                     <button class="btn-main" onclick="call(${index})">call</button>
                                     <button class="btn-2" onclick="openPopup(${index})">Ξ</button>
+                                    <button class="btn-2" onclick="moveToTop(${index})">↑</button>
+                                    <button class="btn-2" onclick="sendToEnd(${index})">↓</button>
                                 </div>
                             </td>
                         </tr>`;
@@ -237,8 +239,24 @@ function closeAlert_Popup(){
     alertPopup.close();
 }
 
+function openQueueinBrowser() {
+    window.pywebview.api.open_external_link('http://192.168.0.200:55000/');
+}
+
 function openQueue() {
-    window.pywebview.api.open_external_link('http://192.168.0.6:55000/');
+    const frame = document.getElementById('api_frame');
+    const popup = document.getElementById('POPUP_Web');
+    
+    frame.src = "http://192.168.0.200:55000/"; 
+    popup.showModal();
+}
+
+function closeWebPopup() {
+    const frame = document.getElementById('api_frame');
+    const popup = document.getElementById('POPUP_Web');
+    
+    popup.close();
+    frame.src = "about:blank";
 }
 
 function applyTemplate() {
@@ -277,4 +295,36 @@ function refresh() {
         if (response) {
             closePopup_Opt();
     }});
+}
+
+function Call_6() {
+    window.pywebview.api.Call_6();
+}
+
+function sndMsg() {
+    const subject = document.getElementById('m_title').value;
+    const message = document.getElementById('m_text').value;
+    window.pywebview.api.send_message(subject, message);
+}
+
+function removeMsg() {
+    const subject = 'remove';
+    const message = '---';
+    window.pywebview.api.send_message(subject, message);
+}
+
+function sendToEnd(index) {
+    window.pywebview.api.move_to_end(index).then(success => {
+        if (success) {
+            updateTable();
+        }
+    });
+}
+
+function moveToTop(Index) {
+        window.pywebview.api.move_to_top(Index).then(success => {
+            if (success) {
+                updateTable();
+            }
+        });
 }
