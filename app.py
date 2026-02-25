@@ -124,7 +124,6 @@ class WartelisteAPI:
             with sqlite3.connect(DB_PATH) as conn:
                 conn.row_factory = sqlite3.Row
                 cursor = conn.execute('SELECT * FROM queue ORDER BY id ASC')
-                # Hier laden wir die existierenden Patienten inklusive ihres is_called-Status
                 patients = [dict(row) for row in cursor.fetchall()]
 
                 new_patient = {
@@ -134,14 +133,13 @@ class WartelisteAPI:
                     'infos': data['infos'],
                     'doctor': data['doctor'],
                     'duration': data['duration'],
-                    'is_called': 0  # Ein brandneuer Patient ist standardmäßig nicht im Call
+                    'is_called': 0  
                 }
 
                 patients.insert(int(target_index), new_patient)
 
                 conn.execute('DELETE FROM queue')
                 
-                # WICHTIG: is_called muss im SQL-Befehl stehen!
                 conn.executemany('''
                     INSERT INTO queue (patient_id, name, room, infos, doctor, duration, is_called)
                     VALUES (:patient_id, :name, :room, :infos, :doctor, :duration, :is_called)
@@ -352,19 +350,17 @@ class WartelisteAPI:
     
     def move_to_end(self, index):
         try:
-            # Sicherheits-Check: Ist index vorhanden?
             if index is None:
                 print("Fehler: Index ist None")
                 return False
                 
-            index = int(index) # Sicherstellen, dass es eine Zahl ist
+            index = int(index)
 
             with sqlite3.connect(DB_PATH) as conn:
                 conn.row_factory = sqlite3.Row
                 cursor = conn.execute('SELECT * FROM queue ORDER BY id ASC')
                 patients = [dict(row) for row in cursor.fetchall()]
 
-                # Prüfen, ob der Index innerhalb der Liste liegt
                 if 0 <= index < len(patients):
                     target_patient = patients.pop(index)
                     patients.append(target_patient)
@@ -386,7 +382,6 @@ class WartelisteAPI:
         
     def move_to_top(self, index):
         try:
-            # Sicherheits-Check für None oder falsche Typen
             if index is None:
                 return False
                 
@@ -398,13 +393,10 @@ class WartelisteAPI:
                 patients = [dict(row) for row in cursor.fetchall()]
 
                 if 0 <= index < len(patients):
-                    # 1. Patienten aus der Liste nehmen
                     target_patient = patients.pop(index)
                     
-                    # 2. Ganz vorne (Index 0) wieder einfügen
                     patients.insert(0, target_patient)
 
-                    # 3. Datenbank aktualisieren (Tabelle neu schreiben)
                     conn.execute('DELETE FROM queue')
                     conn.executemany('''
                         INSERT INTO queue (patient_id, name, room, infos, doctor, duration, is_called)
@@ -421,7 +413,7 @@ class WartelisteAPI:
 def main():
     api = WartelisteAPI()
     window = webview.create_window(
-        title='Quesystem v1.0',
+        title='Quesystem v2.0',
         url=HTML_FILE,
         js_api=api,
         width=1080,

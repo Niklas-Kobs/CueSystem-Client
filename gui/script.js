@@ -1,5 +1,22 @@
 window.addEventListener('pywebviewready', function() {
+    detectChange();
     updateTable();
+});
+
+let patientIndexToDelete = null;
+let Change = false;
+let originalDuration = "";
+
+document.getElementById('remove_one').addEventListener('click', () => {
+    if (patientIndexToDelete !== null) {
+        removeFromQueue(patientIndexToDelete);
+        document.getElementById('CONFIRM_DELETE_SINGLE_POP').close();
+        patientIndexToDelete = null;
+    }
+});
+
+document.getElementById('close_one').addEventListener('click', () => {
+    document.getElementById('CONFIRM_DELETE_SINGLE_POP').close();
 });
 
 function updateTable() {
@@ -15,18 +32,18 @@ function updateTable() {
 
             const row = `<tr class="patient-row ${callClass}" data-index="${index}">
                             <td>${index + 1}</td>              
-                            <td>${patient.patient_id}</td>      
+                            <td>${patient.patient_id}</td>
                             <td>${patient.name}</td>
                             <td>${patient.room}</td>
                             <td class="action-cell">
                                 <div class="action-group">
-                                    <button class="btn-main" onclick="moveItem(${index}, 'up')" ${isFirst ? 'disabled' : ''}>▲</button>
-                                    <button class="btn-main" onclick="moveItem(${index}, 'down')" ${isLast ? 'disabled' : ''}>▼</button>
-                                    <button class="btn-main" onclick="removeFromQueue(${index})">remove</button>
-                                    <button class="btn-main" onclick="call(${index})">call</button>
-                                    <button class="btn-2" onclick="openPopup(${index})">Ξ</button>
-                                    <button class="btn-2" onclick="moveToTop(${index})">↑</button>
-                                    <button class="btn-2" onclick="sendToEnd(${index})">↓</button>
+                                    <button class="btn-main" data-tooltip="Moves the patient one position up" onclick="moveItem(${index}, 'up')" ${isFirst ? 'disabled' : ''}>▲</button>
+                                    <button class="btn-main" data-tooltip="Moves the patient one position down" onclick="moveItem(${index}, 'down')" ${isLast ? 'disabled' : ''}>▼</button>
+                                    <button class="btn-main" data-tooltip="Delete Patient" onclick="openRemoveSingle(${index})">remove</button>
+                                    <button class="btn-main" data-tooltip="Call Patient" onclick="call(${index})">call</button>
+                                    <button class="btn-2" data-tooltip="Open Patient Information" onclick="openPopup(${index})">Ξ</button>
+                                    <button class="btn-2" data-tooltip="Move Patient to Top" onclick="moveToTop(${index})">↑</button>
+                                    <button class="btn-2" data-tooltip="Move Patient to Bottom" onclick="sendToEnd(${index})">↓</button>
                                 </div>
                             </td>
                         </tr>`;
@@ -36,6 +53,7 @@ function updateTable() {
 }
 
 function addToPos() {
+    Change = true
     const posInput = document.getElementById('p_pos');
     const targetIndex = Math.max(0, (parseInt(posInput.value) || 1) - 1);
 
@@ -75,17 +93,17 @@ let currentEditId = null;
 function openPopup(index) {
     const popup = document.getElementById('POPUP');
     popup.showModal();
-
     window.pywebview.api.get_patient_details(index).then(response => {
         if (response) {
             currentEditId = response.id;
-            
             document.getElementById('p_name_POP').value = response.name;
             document.getElementById('p_id_POP').value = response.patient_id;
             document.getElementById('p_room_POP').value = response.room;
             document.getElementById('p_infos_POP').value = response.infos;
             document.getElementById('p_doctor_POP').value = response.doctor;
             document.getElementById('p_duration_POP').value = response.duration;
+            const durElement = document.getElementById('p_duration_POP');
+            originalDuration = durElement.value.toString().trim();
         }
     });
 }
@@ -112,6 +130,11 @@ function clearAll() {
     confirmPopup.showModal();
 }
 
+function openRemoveSingle(index){
+    patientIndexToDelete = index;
+    const confirmremovePopup = document.getElementById('CONFIRM_DELETE_SINGLE_POP');
+    confirmremovePopup.showModal();
+}
 
 function closeConfirmPopup() {
     document.getElementById('CONFIRM_DELETE_POP').close();
@@ -119,6 +142,7 @@ function closeConfirmPopup() {
 
 
 function executeClearAll() {
+    Change = true
     window.pywebview.api.clear_all_entries().then(success => {
         if (success) {
             updateTable();
@@ -131,6 +155,7 @@ function executeClearAll() {
 }
 
 function call(index) {
+    Change = true
     if (index <=4) {
     window.pywebview.api.toggle_call_status(index).then(success => {
         if (success) {
@@ -146,6 +171,9 @@ function call(index) {
 }
 
 function savePopup() {
+
+    const currentDuration = document.getElementById('p_duration_POP').value.toString().trim();
+
     const updatedData = {
         id: currentEditId,
         name: document.getElementById('p_name_POP').value,
@@ -162,16 +190,21 @@ function savePopup() {
             updateTable();
         }
     });
+
+    if (originalDuration !== currentDuration) {
+        Change = true;
+    }
 }
 
 function moveItem(index, direction) {
+    Change = true
     window.pywebview.api.move_entry(index, direction).then(function() {
         updateTable();
     });
 }
 
 function addToQueue() {
-
+    Change = true
     const data = {
     name: document.getElementById('p_name').value,
     id: document.getElementById('p_id').value,
@@ -198,6 +231,7 @@ function addToQueue() {
 }
 
 function removeFromQueue(index) {
+    Change = true
     window.pywebview.api.remove_entry(index).then(function() {
         updateTable();
     });
@@ -291,6 +325,7 @@ function applyTemplate() {
 }
 
 function refresh() {
+    Change = false
     window.pywebview.api.refresh().then(function(response) {
         if (response) {
             closePopup_Opt();
@@ -314,6 +349,7 @@ function removeMsg() {
 }
 
 function sendToEnd(index) {
+    Change = true
     window.pywebview.api.move_to_end(index).then(success => {
         if (success) {
             updateTable();
@@ -322,9 +358,20 @@ function sendToEnd(index) {
 }
 
 function moveToTop(Index) {
+    Change = true
         window.pywebview.api.move_to_top(Index).then(success => {
             if (success) {
                 updateTable();
             }
         });
+}
+
+function detectChange() {
+    if (Change === true){
+        document.getElementById('refresh-btn').classList.add('Change');
+    }
+    else {
+        document.getElementById('refresh-btn').classList.remove('Change');
+    }
+    setTimeout(detectChange, 200);
 }

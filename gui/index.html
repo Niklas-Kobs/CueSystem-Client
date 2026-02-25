@@ -43,8 +43,8 @@
                     
                     
                     <div class="button-group">
-                        <button class="btn-main" onclick="addToQueue()">Add to list</button>
-                        <button class="btn-2" onclick="addToPos()">Add to position</button>
+                        <button class="btn-main" data-tooltip="Add Patient to Queue" onclick="addToQueue()">Add to Queue</button>
+                        <button class="btn-2" data-tooltip="Add Patient to Position in Queue" onclick="addToPos()">Add to position</button>
                         <div class="number-input-container">
                             <button type="button" onclick="changeValue_pos(-1)" class="num-btn btn-left">-</button>
                             <input type="number" id="p_pos" value="1" class="num-input">
@@ -69,8 +69,8 @@
                     <textarea id="m_text" placeholder="Text eingeben..." class="rounded-input span-all-cols message-area"></textarea>
                     
                     <div class="button-group span-all-cols">
-                        <button class="btn-main" onclick="sndMsg()">Post</button>
-                        <button class="btn-2" onclick="removeMsg()">Remove</button>
+                        <button class="btn-main" data-tooltip="Post message" onclick="sndMsg()">Post</button>
+                        <button class="btn-2" data-tooltip="Remove message" onclick="removeMsg()">Remove</button>
                     </div>
                 </div>
             </section>
@@ -94,13 +94,13 @@
         </main>
             <div class="dashboard-footer">
                 <div class="dashboard-button-1">
-                    <th><button class="btn-main" onclick="openPopup_Opt()">Optionen</button></th>
-                    <th><button class="btn-2"  onclick="openQueue()">Open Queue</button></th>
-                    <th><button class="btn-main" onclick="clearAll()">Clear all</button></th>
+                    <th><button class="btn-main" data-tooltip="Open Queue Options (In Development)" onclick="openPopup_Opt()">Optionen</button></th>
+                    <th><button class="btn-2" data-tooltip="Open Public Queue View" onclick="openQueue()">Open Queue</button></th>
+                    <th><button class="btn-main" data-tooltip="Clear All Patients from Queue" onclick="clearAll()">Clear all</button></th>
                 </div>
                 <div class="dashboard-button-2">
-                    <th><button class="btn-2" onclick="Call_6()">Call</button></th>
-                    <th><button class="btn-main" onclick="refresh()">Aktualisieren</button></th>
+                    <th><button class="btn-2" data-tooltip="Play Call Sound" onclick="Call_6()">Call</button></th>
+                    <th><button id="refresh-btn" class="btn-main" data-tooltip="Synchronise Public Queue" onclick="refresh()">Aktualisieren</button></th>
                 </div>
             </div>
     </div>
@@ -133,8 +133,8 @@
                             </div>
                         </div>
                         <div>
-                            <button class="btn-main" onclick="savePopup()">Save</button>
-                            <button class="btn-2" onclick="closePopup()">Close</button>
+                            <button class="btn-main" data-tooltip="Save Patient Information" onclick="savePopup()">Save</button>
+                            <button class="btn-2" data-tooltip="Close Patient Information" onclick="closePopup()">Close</button>
                         </div>
                     </div>
             </section>
@@ -144,10 +144,10 @@
         <div>
                 <h2>Optionen</h2>
                 <div class="option-container">
-                    <button class="btn-main">Option 1</button>
-                    <button class="btn-2">Option 2</button>
-                    <button class="btn-main" onclick="refresh()">Test</button>
-                    <button class="btn-main" onclick="closePopup_Opt()">Close</button>
+                    <button class="btn-main" data-tooltip="In Development" >Option 1</button>
+                    <button class="btn-2" data-tooltip="In Development" >Option 2</button>
+                    <button class="btn-main" data-tooltip="In Development" onclick="refresh()">Test</button>
+                    <button class="btn-main" data-tooltip="Close Options" onclick="closePopup_Opt()">Close</button>
                 </div>
         </div>
     </dialog>
@@ -158,8 +158,20 @@
             <p>Möchten Sie wirklich die gesamte Warteliste löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.</p>
             
             <div class="button-group" style="justify-content: center; gap: 20px; margin-top: 20px;">
-                <button class="btn-main" onclick="executeClearAll()">Ja, alles löschen</button>
-                <button class="btn-2" onclick="closeConfirmPopup()">Abbrechen</button>
+                <button class="btn-main" data-tooltip="Delete All Patients" onclick="executeClearAll()">Ja, alles löschen</button>
+                <button class="btn-2" data-tooltip="Cancel" onclick="closeConfirmPopup()">Abbrechen</button>
+            </div>
+        </div>
+    </dialog>
+
+    <dialog id="CONFIRM_DELETE_SINGLE_POP" class="POPUP" style="max-width: 400px; text-align: center;">
+        <div style="padding: 20px;">
+            <h2>Sind Sie sicher?</h2>
+            <p>Möchten Sie diesen Patienten wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.</p>
+            
+            <div class="button-group" style="justify-content: center; gap: 20px; margin-top: 20px;">
+                <button id="remove_one" class="btn-main" data-tooltip="Delete Patients" onclick="removeFromQueue()">Ja, löschen</button>
+                <button id="close_one" class="btn-2" data-tooltip="Cancel" onclick="closeSingleConfirmPopup()">Abbrechen</button>
             </div>
         </div>
     </dialog>
@@ -169,7 +181,7 @@
             <h2 id="Headline_alert" class="Headline_alert">---</h2>
             <span id="Message_alert" class="Message_alert">---</span>
             <div class="button-group" style="justify-content: center; gap: 20px; margin-top: 20px;">
-                <button class="btn-main" onclick="closeAlert_Popup()">Verstanden</button>
+                <button class="btn-main" data-tooltip="Close" onclick="closeAlert_Popup()">Verstanden</button>
             </div>
         </div>
     </dialog>
@@ -178,8 +190,8 @@
         <div style="height: 100%; display: flex; flex-direction: column;">
             <iframe id="api_frame" src="about:blank" style="width: 100%; height: 100%;"></iframe>
             <div class="Queue-button">
-                <button class="btn-main" onclick="closeWebPopup()">Schließen</button>
-                <button class="btn-2" onclick="openQueueinBrowser()">In Browser öffnen</button>
+                <button class="btn-main" data-tooltip="Close" onclick="closeWebPopup()">Schließen</button>
+                <button class="btn-2" data-tooltip="Open Public Queue in Browser" onclick="openQueueinBrowser()">In Browser öffnen</button>
             </div>
         </div>
     </dialog>
