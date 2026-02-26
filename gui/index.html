@@ -36,7 +36,7 @@
                         <h3>Dauer (min)</h3>
                         <div class="number-input-container">
                             <button type="button" onclick="changeValue_duration(-5)" class="num-btn btn-left">-</button>
-                            <input type="number" id="p_duration" value="0" class="num-input">
+                            <input type="number" id="p_duration" value="20" class="num-input">
                             <button type="button" onclick="changeValue_duration(5)" class="num-btn btn-right">+</button>
                         </div>
                     </div>
@@ -61,9 +61,9 @@
                     <select id="p_template" class="rounded-input" onchange="applyTemplate()">
                         <option value="" disabled selected hidden>Nachricht auswählen...</option>
                         <option value="none">Nachricht auswählen...</option>
-                        <option value="termin">Terminerinnerung</option>
-                        <option value="rezept">Rezept abholbereit</option>
-                        <option value="labor">Laborwerte da</option>
+                        <option value="Patient">Patient mit der Nummer:</option>
+                        <option value="Notfall">Praxis Verlassen</option>
+                        <option value="QueueDefekt">Queue nicht beachten</option>
                     </select>
                     
                     <textarea id="m_text" placeholder="Text eingeben..." class="rounded-input span-all-cols message-area"></textarea>
@@ -95,7 +95,7 @@
             <div class="dashboard-footer">
                 <div class="dashboard-button-1">
                     <th><button class="btn-main" data-tooltip="Open Queue Options (In Development)" onclick="openPopup_Opt()">Optionen</button></th>
-                    <th><button class="btn-2" data-tooltip="Open Public Queue View" onclick="openQueue()">Open Queue</button></th>
+                    <th><button id="alive-btn" class="btn-2" data-tooltip="Open Public Queue View" onclick="openQueue()">Open Queue</button></th>
                     <th><button class="btn-main" data-tooltip="Clear All Patients from Queue" onclick="clearAll()">Clear all</button></th>
                 </div>
                 <div class="dashboard-button-2">

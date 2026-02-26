@@ -3,6 +3,8 @@ import sqlite3
 import webbrowser
 import webview
 import requests
+import time
+from datetime import datetime
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 HTML_FILE = os.path.join(BASE_DIR, 'gui', 'index.html')
@@ -192,62 +194,62 @@ class WartelisteAPI:
                     rows.append(dict(patient))
 
                 WNR_1 = rows[0]['patient_id'] if len(rows) > 0 else "---"
-                Timeestimate_1 = rows[0]['duration'] if len(rows) > 0 else "---"
+                Room_1 = rows[0]['room'] if len(rows) > 0 else "---"
                 Status_1 = rows[0]['is_called'] if len(rows) > 0 else "---"
                 call_1 = rows[0]['is_called'] if len(rows) > 0 else None
 
                 WNR_2 = rows[1]['patient_id'] if len(rows) > 1 else "---"
-                Timeestimate_2 = rows[1]['duration'] if len(rows) > 1 else "---"
+                Room_2 = rows[1]['room'] if len(rows) > 1 else "---"
                 Status_2 = rows[1]['is_called'] if len(rows) > 1 else "---"
                 call_2 = rows[1]['is_called'] if len(rows) > 1 else None
 
                 WNR_3 = rows[2]['patient_id'] if len(rows) > 2 else "---"
-                Timeestimate_3 = rows[2]['duration'] if len(rows) > 2 else "---"
+                Room_3 = rows[2]['room'] if len(rows) > 2 else "---"
                 Status_3 = rows[2]['is_called'] if len(rows) > 2 else "---"
                 call_3 = rows[2]['is_called'] if len(rows) > 2 else None
 
                 WNR_4 = rows[3]['patient_id'] if len(rows) > 3 else "---"
-                Timeestimate_4 = rows[3]['duration'] if len(rows) > 3 else "---"
+                Room_4 = rows[3]['room'] if len(rows) > 3 else "---"
                 Status_4 = rows[3]['is_called'] if len(rows) > 3 else "---"
                 call_4 = rows[3]['is_called'] if len(rows) > 3 else None
 
                 WNR_5 = rows[4]['patient_id'] if len(rows) > 4    else "---"
-                Timeestimate_5 = rows[4]['duration'] if len(rows) > 4 else "---"
+                Room_5 = rows[4]['room'] if len(rows) > 4 else "---"
                 Status_5 = rows[4]['is_called'] if len(rows) > 4 else "---"
                 call_5 = rows[4]['is_called'] if len(rows) > 4 else None
 
                 if Status_1 == 1:
-                    Status_1 = "gerufen"
+                    Status_1 = "Aufgerufen"
                 elif Status_1 == 0:
-                    Status_1 = "wartend"
+                    Status_1 = "Bitte warten"
                 else:
                     Status_1 = "---"
 
                 if Status_2 == 1:
-                    Status_2 = "gerufen"
+                    Status_2 = "Aufgerufen"
                 elif Status_2 == 0:
-                    Status_2 = "wartend"
+                    Status_2 = "Bitte warten"
                 else:                    
                     Status_2 = "---"
                 
                 if Status_3 == 1:
-                    Status_3 = "gerufen"
+                    Status_3 = "Aufgerufen"
                 elif Status_3 == 0:
-                    Status_3 = "wartend"
+                    Status_3 = "Bitte warten"
                 else:                    
                     Status_3 = "---"
 
                 if Status_4 == 1:
-                    Status_4 = "gerufen"
+                    Status_4 = "Aufgerufen"
                 elif Status_4 == 0:
-                    Status_4 = "wartend"
+                    Status_4 = "Bitte warten"
                 else:                    
                     Status_4 = "---"
 
                 if Status_5 == 1:
-                    Status_5 = "gerufen"
+                    Status_5 = "Aufgerufen"
                 elif Status_5 == 0:
-                    Status_5 = "wartend"
+                    Status_5 = "Bitte warten"
                 else:                    
                     Status_5 = "---"
 
@@ -279,27 +281,27 @@ class WartelisteAPI:
                 payload = {
 
                         "WNR_1": WNR_1,
-                        "Timeestimate_1": Timeestimate_1,
+                        "Room_1": Room_1,
                         "Status_1": Status_1,
                         "call_1": call_1,
 
                         "WNR_2": WNR_2,
-                        "Timeestimate_2": Timeestimate_2,
+                        "Room_2": Room_2,
                         "Status_2": Status_2,
                         "call_2": call_2,
 
                         "WNR_3": WNR_3,
-                        "Timeestimate_3": Timeestimate_3,
+                        "Room_3": Room_3,
                         "Status_3": Status_3,
                         "call_3": call_3,
 
                         "WNR_4": WNR_4,
-                        "Timeestimate_4": Timeestimate_4,
+                        "Room_4": Room_4,
                         "Status_4": Status_4,
                         "call_4": call_4,
 
                         "WNR_5": WNR_5,
-                        "Timeestimate_5": Timeestimate_5,
+                        "Room_5": Room_5,
                         "Status_5": Status_5,
                         "call_5": call_5,
 
@@ -408,6 +410,16 @@ class WartelisteAPI:
                 return False
         except Exception as e:
             print(f"Fehler beim Verschieben nach oben: {e}")
+            return False
+        
+    def alive(self):
+        msg = {}
+        try:
+            response_update = requests.post(API_alive, json=msg)
+            print(response_update.json())
+            return True
+        except Exception as e:
+            print(f"Fehler beim Senden der Anfrage: {e}")
             return False
 
 def main():

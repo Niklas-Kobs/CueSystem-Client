@@ -490,4 +490,15 @@ thead th:nth-child(5) { width: 150px; } /* Aktion */
     100% { background-color: #832e2e; }
 }
 
+.Alive {
+    animation: Alert-2 1.5s ease-in-out infinite !important;
+    color: #ffffff;
+}
+
+@keyframes Alert-2 {
+    0%   { background-color: #832e2e; } 
+    50%  { background-color: #c54d30; }
+    100% { background-color: #832e2e; }
+}
+
 .Headline_alert {color: #666; font-weight: 500; margin-bottom: 20px;}

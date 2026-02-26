@@ -1,11 +1,12 @@
 window.addEventListener('pywebviewready', function() {
     detectChange();
     updateTable();
+    alive();
 });
 
 let patientIndexToDelete = null;
 let Change = false;
-let originalDuration = "";
+let originalRoom = "";
 
 document.getElementById('remove_one').addEventListener('click', () => {
     if (patientIndexToDelete !== null) {
@@ -53,7 +54,6 @@ function updateTable() {
 }
 
 function addToPos() {
-    Change = true
     const posInput = document.getElementById('p_pos');
     const targetIndex = Math.max(0, (parseInt(posInput.value) || 1) - 1);
 
@@ -71,6 +71,7 @@ function addToPos() {
         openAlert_Popup();
         return;
     }
+    else{Change = true}
     window.pywebview.api.add_at_position(data, targetIndex).then(success => {
         if (success) {
             updateTable();
@@ -102,8 +103,8 @@ function openPopup(index) {
             document.getElementById('p_infos_POP').value = response.infos;
             document.getElementById('p_doctor_POP').value = response.doctor;
             document.getElementById('p_duration_POP').value = response.duration;
-            const durElement = document.getElementById('p_duration_POP');
-            originalDuration = durElement.value.toString().trim();
+            const durElement = document.getElementById('p_room_POP');
+            originalRoom = durElement.value.toString().trim();
         }
     });
 }
@@ -172,7 +173,7 @@ function call(index) {
 
 function savePopup() {
 
-    const currentDuration = document.getElementById('p_duration_POP').value.toString().trim();
+    const currentRoom = document.getElementById('p_room_POP').value.toString().trim();
 
     const updatedData = {
         id: currentEditId,
@@ -191,7 +192,7 @@ function savePopup() {
         }
     });
 
-    if (originalDuration !== currentDuration) {
+    if (originalRoom !== currentRoom) {
         Change = true;
     }
 }
@@ -204,7 +205,6 @@ function moveItem(index, direction) {
 }
 
 function addToQueue() {
-    Change = true
     const data = {
     name: document.getElementById('p_name').value,
     id: document.getElementById('p_id').value,
@@ -219,6 +219,7 @@ function addToQueue() {
         openAlert_Popup();
         return;
     }
+    else {Change = true}
     window.pywebview.api.add_full_patient(data).then(updateTable);
 
     document.getElementById('p_name').value = '';
@@ -303,17 +304,17 @@ function applyTemplate() {
             subject: "",
             text: ""
         },
-        "termin": {
-            subject: "Erinnerung: Ihr Termin",
-            text: "Guten Tag, dies ist eine Erinnerung an Ihren anstehenden Termin in unserer Praxis."
+        "Patient": {
+            subject: "Der Patient mit der Nummer: #",
+            text: "Nachricht"
         },
-        "rezept": {
-            subject: "Rezept abholbereit",
-            text: "Ihr angefordertes Rezept liegt zur Abholung an der Rezeption bereit. Bitte bringen Sie Ihre Versichertenkarte mit."
+        "Notfall": {
+            subject: "!!Achtung!!",
+            text: "Aufgrund einer Technischenstörung in der Gebäudetechnik bitten wir sie die Praxis zu verlassen. Bitte halten sie sich an die Anweisungen des Personals"
         },
-        "labor": {
-            subject: "Laborergebnisse",
-            text: "Ihre Laborwerte liegen vor. Wir bitten Sie, zur Besprechung einen kurzen Termin zu vereinbaren."
+        "QueueDefekt": {
+            subject: "Technische Störung",
+            text: "Die Warteslange steht gerade nicht zur Verfügung. Bitte achten sie auf die Ansagen des Personals"
         }
     };
     const selectedValue = templateSelect.value;
@@ -374,4 +375,20 @@ function detectChange() {
         document.getElementById('refresh-btn').classList.remove('Change');
     }
     setTimeout(detectChange, 200);
+}
+
+function alive() {
+    const WarningPop = document.getElementById('Alert_POP')
+    window.pywebview.api.alive().then(success => {
+        if (success) {
+            document.getElementById('alive-btn').classList.remove('Alive');
+        }
+        else {
+            document.getElementById('alive-btn').classList.add('Alive');
+            document.getElementById('Headline_alert').innerText = 'Ups!';
+            document.getElementById('Message_alert').innerText = 'Die Public Queue ist offline. Bitte starte den Server oder wende dich an den IT Support';
+            openAlert_Popup();
+        }
+    });
+    setTimeout(alive, 10000);
 }
