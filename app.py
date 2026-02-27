@@ -8,12 +8,16 @@ import jsonLib as jl
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 HTML_FILE = os.path.join(BASE_DIR, 'gui', 'index.html')
 DB_PATH = os.path.join(BASE_DIR, 'queue.db')
+Favicon_FILE = os.path.join(BASE_DIR, 'gui', 'assets', 'favicon.png')
 
-API_update = "http://192.168.0.200:55000/update"
-API_Msg = "http://192.168.0.200:55000/message"
-API_alive = "http://192.168.0.200:55000/alive"
-API_execute = "http://192.168.0.200:55000/execute"
+jl.libconfig (check=True, autoLoad=False, autoCreate=True, set_reset=True)
 
+API_IP = jl.get ("queue_URL")
+
+API_update = API_IP + "/update"
+API_Msg = API_IP + "/message"
+API_alive = API_IP + "/alive"
+API_execute =  API_IP +"/execute"
 
 
 class WartelisteAPI:
@@ -37,6 +41,10 @@ class WartelisteAPI:
                 timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
             )
             ''')
+
+    def get_config(self):
+        config = jl.getAll()
+        return config
 
     def get_queue(self):
         with sqlite3.connect(DB_PATH) as conn:
@@ -159,7 +167,6 @@ class WartelisteAPI:
         try:
             with sqlite3.connect(DB_PATH) as conn:
                 conn.execute('DELETE FROM queue')
-                # Optional: Setzt auch den ID-Zähler (Autoincrement) zurück
                 conn.execute('DELETE FROM sqlite_sequence WHERE name="queue"')
                 conn.commit()
                 return True
@@ -422,7 +429,11 @@ class WartelisteAPI:
         except Exception as e:
             print(f"Fehler beim Senden der Anfrage: {e}")
             return False
-
+    
+    def update_ID_py(self, new_ID):
+        jl.edit ("start_ID", new_ID)
+        return True
+    
 def main():
     api = WartelisteAPI()
     window = webview.create_window(
@@ -434,7 +445,7 @@ def main():
         resizable=True
         )
     
-    webview.start(lambda w: w.maximize(), window)
+    webview.start(lambda w: w.maximize(), window, icon=Favicon_FILE, debug=True)
 
 if __name__ == '__main__':
     main()

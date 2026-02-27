@@ -1,4 +1,5 @@
 window.addEventListener('pywebviewready', function() {
+    get_config();
     detectChange();
     updateTable();
     alive();
@@ -7,9 +8,41 @@ window.addEventListener('pywebviewready', function() {
 let patientIndexToDelete = null;
 let Change = false;
 let originalRoom = "";
+let config_dir = {};
+
+let queue_URL = "";
+
+let last_ID = 0;
+
+let doc_name_1 = "";
+let doc_name_2 = "";
+let doc_name_3 = "";
+let doc_name_4 = "";
+let doc_name_5 = "";
+let doc_name_6 = "";
+
+let msg_1_id = "";
+let msg_1_title = "";
+let msg_1_headline = "";
+let msg_1_msg = "";
+
+let msg_2_id = "";
+let msg_2_title = "";
+let msg_2_headline = "";
+let msg_2_msg = "";
+
+let msg_3_id = "";
+let msg_3_title = "";
+let msg_3_headline = "";
+let msg_3_msg = "";
+
+let msg_4_id = "";
+let msg_4_title = "";
+let msg_4_headline = "";
+let msg_4_msg = "";
 
 document.getElementById('remove_one').addEventListener('click', () => {
-    if (patientIndexToDelete !== null) {
+    if (patientIndexToDelete !== null && patientIndexToDelete !== undefined) {
         removeFromQueue(patientIndexToDelete);
         document.getElementById('CONFIRM_DELETE_SINGLE_POP').close();
         patientIndexToDelete = null;
@@ -19,6 +52,95 @@ document.getElementById('remove_one').addEventListener('click', () => {
 document.getElementById('close_one').addEventListener('click', () => {
     document.getElementById('CONFIRM_DELETE_SINGLE_POP').close();
 });
+
+function get_config() {
+    window.pywebview.api.get_config().then(response => {
+        if (response) {
+            config_dir = response;
+            load_config_to_id();
+        }
+    })
+}
+
+function load_config_to_id() {
+    queue_URL = config_dir.queue_URL;
+
+    last_ID = config_dir.start_ID;
+
+    doc_name_1 = config_dir.doctor.name_1;
+    doc_name_2 = config_dir.doctor.name_2;
+    doc_name_3 = config_dir.doctor.name_3;
+    doc_name_4 = config_dir.doctor.name_4;
+    doc_name_5 = config_dir.doctor.name_5;
+    doc_name_6 = config_dir.doctor.name_6;
+
+    msg_1_title = config_dir.msg_1.title
+    msg_1_headline = config_dir.msg_1.headline
+    msg_1_msg = config_dir.msg_1.msg
+
+    msg_2_title = config_dir.msg_2.title
+    msg_2_headline = config_dir.msg_2.headline
+    msg_2_msg = config_dir.msg_2.msg
+
+    msg_3_title = config_dir.msg_3.title
+    msg_3_headline = config_dir.msg_3.headline
+    msg_3_msg = config_dir.msg_3.msg
+
+    msg_4_title = config_dir.msg_4.title
+    msg_4_headline = config_dir.msg_4.headline
+    msg_4_msg = config_dir.msg_4.msg
+
+    document.getElementById('msg_1').textContent = msg_1_title;
+    document.getElementById('msg_2').textContent = msg_2_title;
+    document.getElementById('msg_3').textContent = msg_3_title;
+    document.getElementById('msg_4').textContent = msg_4_title;
+
+    document.getElementById('doc_1').textContent = doc_name_1;
+    document.getElementById('doc_1').value = doc_name_1;
+
+    document.getElementById('doc_2').textContent = doc_name_2;
+    document.getElementById('doc_2').value = doc_name_2;
+
+    document.getElementById('doc_3').textContent = doc_name_3;
+    document.getElementById('doc_3').value = doc_name_3;
+
+    document.getElementById('doc_4').textContent = doc_name_4;
+    document.getElementById('doc_4').value = doc_name_4;
+
+    document.getElementById('doc_5').textContent = doc_name_5;
+    document.getElementById('doc_5').value = doc_name_5;
+
+    document.getElementById('doc_6').textContent = doc_name_6;
+    document.getElementById('doc_6').value = doc_name_6;
+
+    document.getElementById('doc_1_POP').textContent = doc_name_1;
+    document.getElementById('doc_1_POP').value = doc_name_1;
+
+    document.getElementById('doc_2_POP').textContent = doc_name_2;
+    document.getElementById('doc_2_POP').value = doc_name_2;
+
+    document.getElementById('doc_3_POP').textContent = doc_name_3;
+    document.getElementById('doc_3_POP').value = doc_name_3;
+
+    document.getElementById('doc_4_POP').textContent = doc_name_4;
+    document.getElementById('doc_4_POP').value = doc_name_4;
+
+    document.getElementById('doc_5_POP').textContent = doc_name_5;
+    document.getElementById('doc_5_POP').value = doc_name_5;
+
+    document.getElementById('doc_6_POP').textContent = doc_name_6;
+    document.getElementById('doc_6_POP').value = doc_name_6;
+
+    let new_ID_string = `#${last_ID.toString().padStart(4, '0')}`;
+    document.getElementById('p_id').value = new_ID_string;
+}
+
+function update_ID() {
+    last_ID = config_dir.start_ID;
+    new_ID = last_ID + 1;
+    window.pywebview.api.update_ID_py(new_ID);
+    get_config();
+}
 
 function updateTable() {
     window.pywebview.api.get_queue().then(function(response) {
@@ -76,13 +198,14 @@ function addToPos() {
         if (success) {
             updateTable();
             document.getElementById('p_name').value = '';
-            document.getElementById('p_id').value = '';
+            document.getElementById('p_id').value = last_ID;
             document.getElementById('p_room').value = '';
             document.getElementById('p_infos').value = '';
             document.getElementById('p_doctor').value = '';
             document.getElementById('p_duration').value = '0';
             posInput.value = '1';
             document.getElementById('p_name').focus();
+            update_ID();
         }
     });
 }
@@ -132,7 +255,7 @@ function clearAll() {
 }
 
 function openRemoveSingle(index){
-    patientIndexToDelete = index;
+    patientIndexToDelete = parseInt(index);
     const confirmremovePopup = document.getElementById('CONFIRM_DELETE_SINGLE_POP');
     confirmremovePopup.showModal();
 }
@@ -219,11 +342,11 @@ function addToQueue() {
         openAlert_Popup();
         return;
     }
-    else {Change = true}
+    else {Change = true;}
     window.pywebview.api.add_full_patient(data).then(updateTable);
-
+    update_ID();
     document.getElementById('p_name').value = '';
-    document.getElementById('p_id').value = '';
+    document.getElementById('p_id').value = last_ID;
     document.getElementById('p_room').value = '';
     document.getElementById('p_infos').value = '';
     document.getElementById('p_doctor').value = '';
@@ -275,14 +398,14 @@ function closeAlert_Popup(){
 }
 
 function openQueueinBrowser() {
-    window.pywebview.api.open_external_link('http://192.168.0.200:55000/');
+    window.pywebview.api.open_external_link(queue_URL);
 }
 
 function openQueue() {
     const frame = document.getElementById('api_frame');
     const popup = document.getElementById('POPUP_Web');
     
-    frame.src = "http://192.168.0.200:55000/"; 
+    frame.src = queue_URL; 
     popup.showModal();
 }
 
@@ -304,17 +427,21 @@ function applyTemplate() {
             subject: "",
             text: ""
         },
-        "Patient": {
-            subject: "Der Patient mit der Nummer: #",
-            text: "Nachricht"
+        "msg_1": {
+            subject: msg_1_headline,
+            text: msg_1_msg
         },
-        "Notfall": {
-            subject: "!!Achtung!!",
-            text: "Aufgrund einer Technischenstörung in der Gebäudetechnik bitten wir sie die Praxis zu verlassen. Bitte halten sie sich an die Anweisungen des Personals"
+        "msg_2": {
+            subject: msg_2_headline,
+            text: msg_2_msg
         },
-        "QueueDefekt": {
-            subject: "Technische Störung",
-            text: "Die Warteslange steht gerade nicht zur Verfügung. Bitte achten sie auf die Ansagen des Personals"
+        "msg_3": {
+            subject: msg_3_headline,
+            text: msg_3_msg
+        },
+        "msg_4": {
+            subject: msg_4_headline,
+            text: msg_4_msg
         }
     };
     const selectedValue = templateSelect.value;
@@ -378,7 +505,6 @@ function detectChange() {
 }
 
 function alive() {
-    const WarningPop = document.getElementById('Alert_POP')
     window.pywebview.api.alive().then(success => {
         if (success) {
             document.getElementById('alive-btn').classList.remove('Alive');
