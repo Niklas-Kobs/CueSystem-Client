@@ -1,0 +1,11 @@
+{ 
+    "_header": {
+        "ConfVersion": "3.0",
+        "mode": "safe_mode",
+        "refresh": true,
+        "locked": "soft_lock",
+        "Print": null,
+        "MsgtoCons": 0,
+        "last_updated": "2026-02-19 17:18:40"
+    }
+}

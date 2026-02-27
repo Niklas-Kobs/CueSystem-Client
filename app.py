@@ -3,17 +3,18 @@ import sqlite3
 import webbrowser
 import webview
 import requests
-import time
-from datetime import datetime
+import jsonLib as jl
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 HTML_FILE = os.path.join(BASE_DIR, 'gui', 'index.html')
-DB_PATH = os.path.join(BASE_DIR, 'warteliste.db')
+DB_PATH = os.path.join(BASE_DIR, 'queue.db')
 
 API_update = "http://192.168.0.200:55000/update"
 API_Msg = "http://192.168.0.200:55000/message"
 API_alive = "http://192.168.0.200:55000/alive"
 API_execute = "http://192.168.0.200:55000/execute"
+
+
 
 class WartelisteAPI:
     def __init__(self):
@@ -187,7 +188,7 @@ class WartelisteAPI:
         rows = []
         print("Refresh-Funktion aufgerufen")
         try:
-            with sqlite3.connect('warteliste.db') as conn:
+            with sqlite3.connect('queue.db') as conn:
                 conn.row_factory = sqlite3.Row
                 cursor = conn.execute('SELECT * FROM queue ORDER BY id ASC LIMIT 5')
                 for patient in cursor.fetchall():
