@@ -3,12 +3,15 @@ window.addEventListener('pywebviewready', function() {
     detectChange();
     updateTable();
     alive();
+    data_check();
 });
 
 let patientIndexToDelete = null;
 let Change = false;
 let originalRoom = "";
 let config_dir = {};
+
+let data_check_count = 0;
 
 let queue_URL = "";
 
@@ -137,9 +140,23 @@ function load_config_to_id() {
 
 function update_ID() {
     last_ID = config_dir.start_ID;
-    new_ID = last_ID + 1;
-    window.pywebview.api.update_ID_py(new_ID);
-    get_config();
+    const new_ID = last_ID + 1;
+    window.pywebview.api.update_ID_py(new_ID).then(() => {
+        get_config(); 
+    });
+}
+
+function set_ID() {
+    const new_ID = document.getElementById('ID_POP_Input').value;
+    new_ID_int = parseInt(new_ID)
+    if (!new_ID){
+        new_ID_int = 0;
+    }
+    window.pywebview.api.update_ID_py(new_ID_int).then(() => {
+        document.getElementById('ID_POP_Input').value = '';
+        get_config();
+        closeID_Popup();
+    });
 }
 
 function updateTable() {
@@ -342,16 +359,21 @@ function addToQueue() {
         openAlert_Popup();
         return;
     }
-    else {Change = true;}
-    window.pywebview.api.add_full_patient(data).then(updateTable);
-    update_ID();
-    document.getElementById('p_name').value = '';
-    document.getElementById('p_id').value = last_ID;
-    document.getElementById('p_room').value = '';
-    document.getElementById('p_infos').value = '';
-    document.getElementById('p_doctor').value = '';
-    document.getElementById('p_duration').value = '0';
-    document.getElementById('p_name').focus();
+    else {
+        Change = true;
+    }
+    window.pywebview.api.add_full_patient(data).then(success => { 
+        if (success){
+            updateTable();
+            document.getElementById('p_name').value = '';
+            document.getElementById('p_id').value = last_ID;
+            document.getElementById('p_room').value = '';
+            document.getElementById('p_infos').value = '';
+            document.getElementById('p_doctor').value = '';
+            document.getElementById('p_duration').value = '0';
+            document.getElementById('p_name').focus();
+            update_ID();
+    }});
 }
 
 function removeFromQueue(index) {
@@ -390,6 +412,28 @@ function changeValue_duration_POP(delta) {
 function openAlert_Popup(){
     const alertPopup = document.getElementById('Alert_POP');
     alertPopup.showModal();
+}
+
+function openID_Popup(){
+    const ID_Popup = document.getElementById('ID_POP');
+    document.getElementById('ID_POP_Input').placeholder = last_ID;
+    ID_Popup.showModal();
+}
+
+function closeID_Popup(){
+    const ID_Popup = document.getElementById('ID_POP');
+    ID_Popup.close();
+}
+
+function opeMSG_Popup(){
+    const MSG_Popup = document.getElementById('msg_POP');
+    document.getElementById('ID_POP_Input').placeholder = last_ID;
+    MSG_Popup.showModal();
+}
+
+function closeMSG_Popup(){
+    const MSG_Popup = document.getElementById('msg_POP');
+    MSG_Popup.close();
 }
 
 function closeAlert_Popup(){
@@ -517,4 +561,25 @@ function alive() {
         }
     });
     setTimeout(alive, 10000);
+}
+
+function data_check() {
+    window.pywebview.api.check_data().then(success => {
+        if (success === 0) {}
+        else if (success === 1) {
+            document.getElementById('Headline_alert').innerText = 'INFO';
+            document.getElementById('Message_alert').innerText = 'Patienten Information vom Vortag wurden Automatisch gelöscht.';
+            openAlert_Popup();
+            updateTable();
+        }
+        else {
+            document.getElementById('Headline_alert').innerText = 'Ups!';
+            document.getElementById('Message_alert').innerText = 'Patienten Information vom Vortag konnten nicht Automatisch gelöscht werden. Bitte löschen sie alle daten vom Vortag';
+            openAlert_Popup();
+            updateTable();
+        }
+    });
+    const timeout_min = 120
+    let timeout_ms = (timeout_min * 60) * 1000
+    setTimeout(data_check, timeout_ms);
 }

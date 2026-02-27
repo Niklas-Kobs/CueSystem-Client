@@ -6,10 +6,10 @@
         "locked": "soft_lock",
         "Print": null,
         "MsgtoCons": 2,
-        "last_updated": "2026-02-27 17:00:20"
+        "last_updated": "2026-02-27 21:53:34"
     },
-    "queue_URL": "http://192.168.0.200:55000",
-    "start_ID": 1,
+    "queue_URL": "http://192.168.0.200:55000/",
+    "start_ID": 9,
     "doctor": {
         "name_1": "Dr. Wüst",
         "name_2": "Dr. Müller",

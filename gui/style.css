@@ -39,6 +39,75 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
+.option-container {
+    width: 100%;
+    border-radius: 20px;
+    border-collapse: collapse;
+    margin-top: 20px;
+    table-layout: auto;
+}
+
+.menu-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.menu-cell {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px 0;
+}
+
+.menu-item-msg {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Zwei gleich breite Spalten */
+    gap: 10px;                     /* Abstand zwischen den Feldern */
+    padding: 10px;
+}
+
+.menu-item-msg input {
+    width: 100%; /* Füllt die jeweilige Spalte */
+}
+
+.menu-item-msg textarea {
+    grid-column: span 2; /* Textarea streckt sich über beide Spalten */
+    width: 100%;
+    min-height: 80px;    /* Etwas mehr Platz für die Nachricht */
+    resize: vertical;    /* Nutzer kann Höhe anpassen, aber nicht Breite */
+}
+
+/* Optional: Zebra-Look für die Reihen wie im Bild */
+.menu-table tr:nth-child(even) .menu-item-msg {
+    background-color: #f4f7f9;
+    border-radius: 8px;
+}
+
+.menu-text {
+    flex-grow: 1;
+    margin: 0;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.menu-item button {
+    width: 160px;
+    min-width: 160px;
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.menu-item .btn-main, 
+.menu-item .btn-2 {
+    width: 10px; 
+    flex-shrink: 0;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -65,66 +134,73 @@ th, td {
     background-color: #34495e;
 }
 
-/* Der Kasten um die Tabelle */
+
 .table-container {
-    width: 100%;       /* WICHTIG: Muss die volle Breite des Containers nutzen */
-    display: block;    /* Sicherstellen, dass es kein Inline-Element ist */
-    overflow-x: hidden; /* Verhindert hässliches seitliches Scrollen */
+    width: 100%;       
+    display: block;    
+    overflow-x: hidden; 
     flex-grow: 1;
-    height: 500px;          /* Festgelegte Höhe des Kastens */
-    overflow-y: scroll;       /* Aktiviert vertikales Scrollen, wenn nötig */
-    border: 1px solid #ccc; /* Optional: Ein Rahmen wie im Bild */
+    height: 500px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
     border-radius: 8px;
     background-color: #fff;
     position: relative;
 }
 
 .table-container::-webkit-scrollbar {
-    width: 20px;               /* Breite der Bar */
-    display: block;            /* Stellt sicher, dass sie gerendert wird */
+    width: 20px;
+    display: block;
 }
 
-/* Der Hintergrund der Scrollbar (Track) */
+
 .table-container::-webkit-scrollbar-track {
-    background: #f1f1f1;       /* Hellgrau, passend zu deinem Hintergrund */
+    background: #f1f1f1;
     border-radius: 10px;
 }
 
-/* Der bewegliche Schieber (Thumb) */
+
 .table-container::-webkit-scrollbar-thumb {
-    background: #5d6a8a;       /* Dein spezifisches Blau-Grau */
-    border-radius: 10px;       /* Abgerundet wie deine Buttons */
-    border: 2px solid #f1f1f1; /* Erzeugt einen kleinen Abstand zum Rand */
+    background: #5d6a8a;
+    border-radius: 10px;
+    border: 2px solid #f1f1f1;
 }
 
-/* Farbe beim Drüberfahren (Hover) */
+
 .table-container::-webkit-scrollbar-thumb:hover {
-    background: #4a546d;       /* Etwas dunkler beim Hover */
+    background: #4a546d;
 }
 
-/* 3. Für Firefox (unterstützt weniger Styling, aber dauerhafte Anzeige) */
+
 .table-container {
     scrollbar-width: thin;
     scrollbar-color: #5d6a8a #f1f1f1;
 }
 
-/* Fixiert die Überschriften (Header), damit sie beim Scrollen oben bleiben */
+
 thead th {
     position: sticky;
     top: 0;
-    background-color: #f8f9fa; /* Gleiche Farbe wie der Header-Hintergrund */
-    z-index: 10;               /* Bleibt über den scrollenden Karten */
+    background-color: #f8f9fa;
+    z-index: 10;
     border-bottom: 2px solid #dee2e6;
     padding: 15px;
 }
 
-/* Styling für die "Karten" (deine Tabellenzeilen) */
+.thead-2 th {
+    top: 0;
+    background-color: #f8f9fa;
+    z-index: 10;
+    border-bottom: 2px solid #dee2e6;
+    padding: 15px;
+}
+
 tr {
     border-bottom: 1px solid #eee;
 }
 
 tr:nth-child(even) {
-    background-color: #f2f5f7; /* Der graue Wechsel-Effekt aus deinem Bild */
+    background-color: #f2f5f7;
 }
 
 .add-patient-container {
@@ -136,9 +212,16 @@ tr:nth-child(even) {
 
 .input-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr; /* Drei gleichmäßige Spalten */
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 15px;
     align-items: start;
+}
+
+.input-grid-pop {
+    display: flex;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+    align-items: flex;
 }
 
 .dashboard-header {
@@ -150,38 +233,35 @@ tr:nth-child(even) {
 }
 
 .form-section {
-    flex: 1; /* Beide Formulare teilen sich den Platz */
+    flex: 1;
 }
 
-/* Grid-System für die Inputs */
 .input-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 12px;
 }
 
-/* Das Grid für die Nachrichten-Sektion */
 .message-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-auto-rows: minmax(45px, auto); /* Gleiche Zeilenhöhe wie links */
+    grid-auto-rows: minmax(45px, auto);
     gap: 12px;
 }
 
-/* Das Textfeld groß machen */
+
 .message-area {
-    grid-row: span 2; /* Es überspannt 3 Zeilen, um die Höhe der linken Seite zu erreichen */
-    min-height: 100px; /* Hier kannst du die Höhe feinjustieren */
+    grid-row: span 2;
+    min-height: 100px;
     height: 100%;
 }
 
-/* Die Buttons ganz nach unten zwingen */
+
 .message-grid .button-group {
     align-self: end;
     margin-top: auto;
 }
 
-/* Das Pillen-Design aus deinem Screenshot */
 .rounded-input {
     border: 1.5px solid #888;
     border-radius: 12px;
@@ -201,27 +281,25 @@ tr:nth-child(even) {
     box-sizing: border-box;
 }
 
-/* Große Textfelder */
+
 .patient-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    /* Erzeugt gleichmäßige Zeilenhöhen */
     grid-auto-rows: minmax(45px, auto); 
     gap: 12px;
 }
 
 .span-2-rows {
     grid-column: span 2;
-    grid-row: span 2; /* Belegt die Höhe von zwei Standard-Inputs */
-    height: 100%;     /* Zwingt die Textarea, den Platz auszufüllen */
+    grid-row: span 2;
+    height: 100%;
 }
 
 .button-group {
     grid-column: span 2; 
-    align-self: end;  /* Richtet die Buttons am unteren Rand ihrer Zelle aus */
+    align-self: end;
 }
 
-/* Sorgt dafür, dass das Positions-Feld rechts daneben bündig ist */
 #p_pos {
     align-self: end;
 }
@@ -229,7 +307,6 @@ tr:nth-child(even) {
 
 textarea { resize: none; }
 
-/* Blaue Buttons */
 .button-group {
     display: flex;
     gap: 10px;
@@ -239,7 +316,7 @@ textarea { resize: none; }
 .btn-main {
     position: relative;
     cursor: pointer;
-    background-color: #5d6a8a; /* Das spezifische Blau-Grau */
+    background-color: #5d6a8a;
     color: white;
     border: none;
     border-radius: 10px;
@@ -352,7 +429,7 @@ textarea { resize: none; }
     align-items: center;
     border: 1.5px solid #888;
     border-radius: 12px;
-    overflow: hidden; /* Sorgt dafür, dass die Buttons die Ecken nicht überlagern */
+    overflow: hidden;
     background: white;
 }
 
@@ -374,7 +451,6 @@ textarea { resize: none; }
     justify-content: center;
 }
 
-/* Versteckt Standard-Pfeile in Chrome/Safari */
 .num-input::-webkit-outer-spin-button,
 .num-input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -395,7 +471,7 @@ textarea { resize: none; }
     background: #e1e1e8;
 }
 
-/* Trennlinien zwischen Buttons und Input */
+
 .btn-left { border-right: 1.5px solid #888; }
 .btn-right { border-left: 1.5px solid #888; }
 
@@ -405,6 +481,14 @@ textarea { resize: none; }
     gap: 40%;
     margin-top: 20px;
     margin-bottom: -20px;
+}
+
+.Option-footer {
+    width: 100%;
+    display: flex;
+    gap: 40%;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .dashboard-button-1 {
@@ -429,39 +513,37 @@ textarea { resize: none; }
 }
 
 .patient-row {
-   table-layout: fixed; /* Zwingt die Spalten, sich an die 100% zu halten */
+   table-layout: fixed; 
    border-collapse: collapse;
-   width: 100%;       /* WICHTIG: Muss die volle Breite des Containers nutzen */
-   display: table-row;    /* Sicherstellen, dass es kein Inline-Element ist */
-   overflow-x: hidden; /* Verhindert hässliches seitliches Scrollen */
+   width: 100%; 
+   display: table-row;
+   overflow-x: hidden;
 }
 
 .action-group {
     display: flex;
-    flex-direction: row;      /* Erzwingt nebeneinander (waagerecht) */
-    flex-wrap: nowrap;        /* Verhindert das Umbrechen nach unten */
-    gap: 5px;                 /* Abstand zwischen den Buttons */
-    justify-content: center;  /* Zentriert die Button-Gruppe in der Spalte */
+    flex-direction: row;
+    flex-wrap: nowrap; 
+    gap: 5px; 
+    justify-content: center;
 }
 
-/* Tabellen-Zelle für Aktionen */
 .action-cell {
-    min-width: 320px;         /* Breite so wählen, dass alle Buttons passen */
+    min-width: 320px;
     vertical-align: middle;
 }
 
-thead th:nth-child(1) { width: 19%; }  /* Position */
-thead th:nth-child(2) { width: 19%; } /* ID */
-thead th:nth-child(3) { width: 19%; }  /* Name (nimmt den Rest) */
-thead th:nth-child(4) { width: 19%; } /* Raum */
-thead th:nth-child(5) { width: 150px; } /* Aktion */
+thead th:nth-child(1) { width: 19%; }
+thead th:nth-child(2) { width: 19%; } 
+thead th:nth-child(3) { width: 19%; }
+thead th:nth-child(4) { width: 19%; } 
+thead th:nth-child(5) { width: 150px; }
 
 .POPUP {
     border-radius: 20px;
     border-width: 0;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     z-index: 1000;
-
 }
 
 .POPUP::backdrop {

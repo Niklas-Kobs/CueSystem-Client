@@ -4,6 +4,8 @@ import webbrowser
 import webview
 import requests
 import jsonLib as jl
+import time
+from datetime import datetime, timedelta
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 HTML_FILE = os.path.join(BASE_DIR, 'gui', 'index.html')
@@ -433,6 +435,23 @@ class WartelisteAPI:
     def update_ID_py(self, new_ID):
         jl.edit ("start_ID", new_ID)
         return True
+    
+    def check_data(self):
+        yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+        
+        try:
+            with sqlite3.connect(DB_PATH) as conn:
+                sql = "DELETE FROM queue WHERE date(timestamp) <= date(?)"
+                cursor = conn.execute(sql, (yesterday,))
+                conn.commit()
+                print(f"Erfolgreich gelöscht: {cursor.rowcount} Einträge vom {yesterday} und davor.")
+                if cursor.rowcount == 0:
+                    return 0
+                else:
+                    return 1
+        except sqlite3.Error as e:
+            print(f"Fehler beim Löschen: {e}")
+            return 2
     
 def main():
     api = WartelisteAPI()
