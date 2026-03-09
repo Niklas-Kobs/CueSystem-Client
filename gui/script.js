@@ -9,6 +9,7 @@ window.addEventListener('pywebviewready', function() {
 let patientIndexToDelete = null;
 let Change = false;
 let originalRoom = "";
+let originalID = "";
 let config_dir = {};
 
 let data_check_count = 0;
@@ -57,6 +58,7 @@ document.getElementById('close_one').addEventListener('click', () => {
 });
 
 function get_config() {
+    console.log("get-Config")
     window.pywebview.api.get_config().then(response => {
         if (response) {
             config_dir = response;
@@ -136,6 +138,7 @@ function load_config_to_id() {
 
     let new_ID_string = `#${last_ID.toString().padStart(4, '0')}`;
     document.getElementById('p_id').value = new_ID_string;
+    console.log(queue_URL)
 }
 
 function update_ID() {
@@ -245,6 +248,8 @@ function openPopup(index) {
             document.getElementById('p_duration_POP').value = response.duration;
             const durElement = document.getElementById('p_room_POP');
             originalRoom = durElement.value.toString().trim();
+            const IDElement = document.getElementById('p_id_POP');
+            originalID = IDElement.value.toString().trim();
         }
     });
 }
@@ -314,6 +319,7 @@ function call(index) {
 function savePopup() {
 
     const currentRoom = document.getElementById('p_room_POP').value.toString().trim();
+    const currentID = document.getElementById('p_id_POP').value.toString().trim();
 
     const updatedData = {
         id: currentEditId,
@@ -331,8 +337,10 @@ function savePopup() {
             updateTable();
         }
     });
-
     if (originalRoom !== currentRoom) {
+        Change = true;
+    }
+    else if (originalID !== currentID){
         Change = true;
     }
 }
@@ -427,13 +435,150 @@ function closeID_Popup(){
 
 function opeMSG_Popup(){
     const MSG_Popup = document.getElementById('msg_POP');
-    document.getElementById('ID_POP_Input').placeholder = last_ID;
+    document.getElementById('msg_1_title').value = msg_1_title;
+    document.getElementById('msg_1_headline').value = msg_1_headline;
+    document.getElementById('msg_1_msg').innerText = msg_1_msg;
+
+    document.getElementById('msg_2_title').value = msg_2_title;
+    document.getElementById('msg_2_headline').value = msg_2_headline;
+    document.getElementById('msg_2_msg').innerText = msg_2_msg;
+
+    document.getElementById('msg_3_title').value = msg_3_title;
+    document.getElementById('msg_3_headline').value = msg_3_headline;
+    document.getElementById('msg_3_msg').innerText = msg_3_msg;
+
+    document.getElementById('msg_4_title').value = msg_4_title;
+    document.getElementById('msg_4_headline').value = msg_4_headline;
+    document.getElementById('msg_4_msg').innerText = msg_4_msg;
     MSG_Popup.showModal();
 }
 
 function closeMSG_Popup(){
     const MSG_Popup = document.getElementById('msg_POP');
     MSG_Popup.close();
+}
+
+function saveMSG_Popup(){
+    const MSG_Popup = document.getElementById('msg_POP');
+    msg_1_title = document.getElementById('msg_1_title').value;
+    msg_1_headline = document.getElementById('msg_1_headline').value;
+    msg_1_msg = document.getElementById('msg_1_msg').value;
+
+    msg_2_title = document.getElementById('msg_2_title').value;
+    msg_2_headline = document.getElementById('msg_2_headline').value;
+    msg_2_msg = document.getElementById('msg_2_msg').value;
+
+    msg_3_title = document.getElementById('msg_3_title').value;
+    msg_3_headline = document.getElementById('msg_3_headline').value;
+    msg_3_msg = document.getElementById('msg_3_msg').value;
+
+    msg_4_title = document.getElementById('msg_4_title').value;
+    msg_4_headline = document.getElementById('msg_4_headline').value;
+    msg_4_msg = document.getElementById('msg_4_msg').value;
+    /*console.log({msg_1_title,msg_1_headline,msg_1_msg,   msg_2_title,msg_2_headline,msg_2_msg,    msg_3_title,msg_3_headline,msg_3_msg,   msg_4_title,msg_4_headline,msg_4_msg})*/
+    msg_data = {
+        "msg_1_title": msg_1_title,
+        "msg_1_headline": msg_1_headline,
+        "msg_1_msg":  msg_1_msg,
+
+        "msg_2_title": msg_2_title,
+        "msg_2_headline": msg_2_headline,
+        "msg_2_msg":  msg_2_msg,
+
+        "msg_3_title": msg_3_title,
+        "msg_3_headline": msg_3_headline,
+        "msg_3_msg":  msg_3_msg,
+
+        "msg_4_title": msg_4_title,
+        "msg_4_headline": msg_4_headline,
+        "msg_4_msg":  msg_4_msg
+    }
+    window.pywebview.api.update_msg(msg_data).then(success => {
+        if (success) {
+            get_config();
+        }
+        else {
+            document.getElementById('Headline_alert').innerText = 'Ups!';
+            document.getElementById('Message_alert').innerText = 'Die Nachrichten konnten nicht gespeichert werden';
+            openAlert_Popup();
+        }
+    });
+    MSG_Popup.close();
+}
+
+function openDoc_Popup(){
+    const doc_Popup = document.getElementById('doc_POP');
+    document.getElementById('POP_doc_1').value = doc_name_1;
+    document.getElementById('POP_doc_2').value = doc_name_2;
+    document.getElementById('POP_doc_3').value = doc_name_3;
+    document.getElementById('POP_doc_4').value = doc_name_4;
+    document.getElementById('POP_doc_5').value = doc_name_5;
+    document.getElementById('POP_doc_6').value = doc_name_6;
+    doc_Popup.showModal();
+}
+
+function closeDoc_Popup(){
+    const doc_Popup = document.getElementById('doc_POP');
+    doc_Popup.close();
+}
+
+function saveDoc_Popup(){
+    const doc_Popup = document.getElementById('doc_POP');
+    doc_name_1 = document.getElementById('POP_doc_1').value;
+    doc_name_2 = document.getElementById('POP_doc_2').value;
+    doc_name_3 = document.getElementById('POP_doc_3').value;
+    doc_name_4 = document.getElementById('POP_doc_4').value;
+    doc_name_5 = document.getElementById('POP_doc_5').value;
+    doc_name_6 = document.getElementById('POP_doc_6').value;
+    doc_data = {
+        "name_1": doc_name_1,
+        "name_2": doc_name_2,
+        "name_3": doc_name_3,
+        "name_4": doc_name_4,
+        "name_5": doc_name_5,
+        "name_6": doc_name_6
+    }
+    window.pywebview.api.update_doc(doc_data).then(success => {
+        if (success) {
+            get_config();
+        }
+        else {
+            document.getElementById('Headline_alert').innerText = 'Ups!';
+            document.getElementById('Message_alert').innerText = 'Namen konnten nicht gespeichert werden';
+            openAlert_Popup();
+        }
+    });
+    doc_Popup.close();
+}
+
+function openUrl_Popup(){
+    const url_Popup = document.getElementById('URL_POP');
+    document.getElementById('URL_POP_Input').value = queue_URL;
+    url_Popup.showModal();
+}
+
+function closeUrl_Popup(){
+    const url_Popup = document.getElementById('URL_POP');
+    url_Popup.close();
+}
+
+function saveUrl_Popup(){
+    const url_Popup = document.getElementById('URL_POP');
+    queue_URL = document.getElementById('URL_POP_Input').value;
+    url_data = {
+        "queue_URL": queue_URL
+    }
+    window.pywebview.api.update_url(url_data).then(success => {
+        if (success) {
+            get_config();
+        }
+        else {
+            document.getElementById('Headline_alert').innerText = 'Ups!';
+            document.getElementById('Message_alert').innerText = 'URL konnte nicht gespeichert werden';
+            openAlert_Popup();
+        }
+    });
+    url_Popup.close();
 }
 
 function closeAlert_Popup(){
@@ -497,11 +642,13 @@ function applyTemplate() {
 }
 
 function refresh() {
-    Change = false
-    window.pywebview.api.refresh().then(function(response) {
+    if (Change === true){
+        Change = false
+        window.pywebview.api.refresh().then(function(response) {
         if (response) {
             closePopup_Opt();
     }});
+    }
 }
 
 function Call_6() {
@@ -511,12 +658,24 @@ function Call_6() {
 function sndMsg() {
     const subject = document.getElementById('m_title').value;
     const message = document.getElementById('m_text').value;
-    window.pywebview.api.send_message(subject, message);
+    if (subject === '' || message === ''){
+        document.getElementById('Headline_alert').innerText = 'INFO';
+        document.getElementById('Message_alert').innerText = 'Bitte gib eine Nachricht ein.';
+        openAlert_Popup();
+    }
+    else {
+        document.getElementById('msg-post-update').innerText = 'Update';
+        window.pywebview.api.send_message(subject, message);
+    }
 }
 
 function removeMsg() {
     const subject = 'remove';
     const message = '---';
+    const buttontext = document.getElementById('msg-post-update').innerText;
+    if (buttontext === 'Update'){
+        document.getElementById('msg-post-update').innerText = 'Post';
+    }
     window.pywebview.api.send_message(subject, message);
 }
 

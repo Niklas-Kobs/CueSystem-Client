@@ -73,7 +73,7 @@
                     <textarea id="m_text" placeholder="Text eingeben..." class="rounded-input span-all-cols message-area"></textarea>
                     
                     <div class="button-group span-all-cols">
-                        <button class="btn-main" data-tooltip="Post message" onclick="sndMsg()">Post</button>
+                        <button id="msg-post-update" class="btn-main" data-tooltip="Post/Updates message" onclick="sndMsg()">Post</button>
                         <button class="btn-2" data-tooltip="Remove message" onclick="removeMsg()">Remove</button>
                     </div>
                 </div>
@@ -146,7 +146,7 @@
             </section>
     </dialog>
 
-<dialog id="msg_POP" class="POPUP" style="min-width: 50%; max-width: 70%; max-height: 90%; text-align: center;">
+<dialog id="msg_POP" class="POPUP" style="min-width: 50%; max-width: 70%; max-height: 100%; text-align: center;">
     <div class="option-container">
         <table class="menu-table" style="width: 100%;">
             <thead class="thead-2">
@@ -157,6 +157,7 @@
             <tbody>
                 <tr>
                     <td class="menu-cell">
+                        <h2 style="margin-left: 15px;">Message 1</h2>
                         <div class="menu-item-msg">
                             <input type="text" id="msg_1_title" placeholder="Titel eingeben..." class="rounded-input">
                             <input type="text" id="msg_1_headline" placeholder="Überschrift eingeben..." class="rounded-input">
@@ -166,45 +167,39 @@
                 </tr>
                 <tr>
                     <td class="menu-cell">
+                        <h2 style="margin-left: 15px;">Message 2</h2>
                         <div class="menu-item-msg">
-                            <input type="text" id="msg_1_title" placeholder="Titel eingeben..." class="rounded-input">
-                            <input type="text" id="msg_1_headline" placeholder="Überschrift eingeben..." class="rounded-input">
-                            <textarea id="msg_1_msg" placeholder="Nachricht eingeben..." class="rounded-input"></textarea>
+                            <input type="text" id="msg_2_title" placeholder="Titel eingeben..." class="rounded-input">
+                            <input type="text" id="msg_2_headline" placeholder="Überschrift eingeben..." class="rounded-input">
+                            <textarea id="msg_2_msg" placeholder="Nachricht eingeben..." class="rounded-input"></textarea>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td class="menu-cell">
+                        <h2 style="margin-left: 15px;">Message 3</h2>
                         <div class="menu-item-msg">
-                            <input type="text" id="msg_1_title" placeholder="Titel eingeben..." class="rounded-input">
-                            <input type="text" id="msg_1_headline" placeholder="Überschrift eingeben..." class="rounded-input">
-                            <textarea id="msg_1_msg" placeholder="Nachricht eingeben..." class="rounded-input"></textarea>
+                            <input type="text" id="msg_3_title" placeholder="Titel eingeben..." class="rounded-input">
+                            <input type="text" id="msg_3_headline" placeholder="Überschrift eingeben..." class="rounded-input">
+                            <textarea id="msg_3_msg" placeholder="Nachricht eingeben..." class="rounded-input"></textarea>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td class="menu-cell">
+                        <h2 style="margin-left: 15px;">Message 4</h2>
                         <div class="menu-item-msg">
-                            <input type="text" id="msg_1_title" placeholder="Titel eingeben..." class="rounded-input">
-                            <input type="text" id="msg_1_headline" placeholder="Überschrift eingeben..." class="rounded-input">
-                            <textarea id="msg_1_msg" placeholder="Nachricht eingeben..." class="rounded-input"></textarea>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="menu-cell">
-                        <div class="menu-item-msg">
-                            <input type="text" id="msg_1_title" placeholder="Titel eingeben..." class="rounded-input">
-                            <input type="text" id="msg_1_headline" placeholder="Überschrift eingeben..." class="rounded-input">
-                            <textarea id="msg_1_msg" placeholder="Nachricht eingeben..." class="rounded-input"></textarea>
+                            <input type="text" id="msg_4_title" placeholder="Titel eingeben..." class="rounded-input">
+                            <input type="text" id="msg_4_headline" placeholder="Überschrift eingeben..." class="rounded-input">
+                            <textarea id="msg_4_msg" placeholder="Nachricht eingeben..." class="rounded-input"></textarea>
                         </div>
                     </td>
                 </tr>
                 </tbody>
         </table>
     </div>
-    <div class="Option-footer" style="display: flex; justify-content: space-around; padding: 20px;">
-        <button class="btn-main" onclick="saveAllMessages()">Save</button>
+    <div class="Option-footer">
+        <button class="btn-main" onclick="saveMSG_Popup()">Save</button>
         <button class="btn-2" onclick="closeMSG_Popup()">Close</button>
     </div>
 </dialog>
@@ -221,7 +216,7 @@
                     <tr>
                         <td class="menu-cell">
                             <div class="menu-item">
-                                <button class="btn-main" onclick="opeMSG_Popup()">Nachrichten</button>
+                                <button class="btn-main" onclick="opeMSG_Popup()" style="margin-left: 5px;">Nachrichten</button>
                                 <span class="menu-text">Bearbeite die Vorlagen für deine Nachrichten</span>
                             </div>
                         </td>
@@ -229,7 +224,7 @@
                     <tr>
                         <td class="menu-cell">
                             <div class="menu-item">
-                                <button class="btn-2" onclick="openDocPopup()">Doctor</button>
+                                <button class="btn-2" onclick="openDoc_Popup()" style="margin-left: 5px;">Doctor</button>
                                 <span class="menu-text">Bearbeite die Namen der Ärzte für die Anzeige</span>
                             </div>
                         </td>
@@ -237,7 +232,7 @@
                     <tr>
                         <td class="menu-cell">
                             <div class="menu-item">
-                                <button class="btn-main" onclick="openID_Popup()">Set Start-ID</button>
+                                <button class="btn-main" onclick="openID_Popup()" style="margin-left: 5px;">Set Start-ID</button>
                                 <span class="menu-text">Setze die Start-ID, die beim Hinzufügen erscheint</span>
                             </div>
                         </td>
@@ -245,7 +240,7 @@
                     <tr>
                         <td class="menu-cell">
                             <div class="menu-item">
-                                <button class="btn-2" onclick="openURL_Popup()">Set Queue-URL</button>
+                                <button class="btn-2" onclick="openUrl_Popup()" style="margin-left: 5px;">Set Queue-URL</button>
                                 <span class="menu-text">Setze die Queue URL. Achtung! Die Änderungen der URL kann dazu füren das sich die Queue nicht aktualisieren lässt.</span>
                             </div>
                         </td>
@@ -307,6 +302,83 @@
             <div class="Queue-button">
                 <button class="btn-main" data-tooltip="Close" onclick="closeWebPopup()">Schließen</button>
                 <button class="btn-2" data-tooltip="Open Public Queue in Browser" onclick="openQueueinBrowser()">In Browser öffnen</button>
+            </div>
+        </div>
+    </dialog>
+
+    <dialog id="doc_POP" class="POPUP" style="min-width: 50%; max-width: 70%; max-height: 100%; text-align: center;">
+        <div class="option-container">
+            <table class="menu-table" style="width: 100%;">
+                <thead class="thead-2">
+                    <tr>
+                        <th><h2>Name Editor</h2></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="menu-cell">
+                            <h2 style="margin-left: 15px;">Doktor 1</h2>
+                            <div class="menu-item-msg">
+                                <input type="text" id="POP_doc_1" placeholder="Namen eingeben..." class="rounded-input">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="menu-cell">
+                            <h2 style="margin-left: 15px;">Doktor 1</h2>
+                            <div class="menu-item-msg">
+                                <input type="text" id="POP_doc_2" placeholder="Namen eingeben..." class="rounded-input">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="menu-cell">
+                            <h2 style="margin-left: 15px;">Doktor 3</h2>
+                            <div class="menu-item-msg">
+                                <input type="text" id="POP_doc_3" placeholder="Namen eingeben..." class="rounded-input">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="menu-cell">
+                            <h2 style="margin-left: 15px;">Doktor 4</h2>
+                            <div class="menu-item-msg">
+                                <input type="text" id="POP_doc_4" placeholder="Namen eingeben..." class="rounded-input">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="menu-cell">
+                            <h2 style="margin-left: 15px;">Doktor 5</h2>
+                            <div class="menu-item-msg">
+                                <input type="text" id="POP_doc_5" placeholder="Namen eingeben..." class="rounded-input">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="menu-cell">
+                            <h2 style="margin-left: 15px;">Doktor 6</h2>
+                            <div class="menu-item-msg">
+                                <input type="text" id="POP_doc_6" placeholder="Namen eingeben..." class="rounded-input">
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+            </table>
+        </div>
+        <div class="Option-footer">
+            <button class="btn-main" onclick="saveUrl_Popup()">Save</button>
+            <button class="btn-2" onclick="closeDoc_Popup()">Close</button>
+        </div>
+    </dialog>
+
+    <dialog id="URL_POP" class="POPUP" style="max-width: 400px; text-align: center;">
+        <div style="padding: 20px;">
+            <h2>Set Queue URL:</h2>
+            <input type="text" id="URL_POP_Input" placeholder="URL eingeben..." class="rounded-input">
+            <div class="button-group" style="justify-content: center; gap: 20px; margin-top: 20px;">
+                <button class="btn-main" data-tooltip="Close" onclick="saveUrl_Popup()">Save</button>
+                <button class="btn-2" data-tooltip="Close" onclick="closeUrl_Popup()">Close</button>
             </div>
         </div>
     </dialog>

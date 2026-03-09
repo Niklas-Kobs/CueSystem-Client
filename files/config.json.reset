@@ -5,11 +5,11 @@
         "refresh": true,
         "locked": "soft_lock",
         "Print": null,
-        "MsgtoCons": 2,
-        "last_updated": "2026-02-27 21:53:34"
+        "MsgtoCons": 0,
+        "last_updated": "2026-03-09 19:22:57"
     },
     "queue_URL": "http://192.168.0.200:55000/",
-    "start_ID": 9,
+    "start_ID": 0,
     "doctor": {
         "name_1": "Dr. Wüst",
         "name_2": "Dr. Müller",
@@ -21,7 +21,7 @@
     "msg_1": {
         "title": "Der Patient mit der Nummer...",
         "headline": "Der Patient mit der Nummer: #",
-        "msg": "Nachricht"
+        "msg": ""
     },
     "msg_2": {
         "title": "Praxis Verlassen",

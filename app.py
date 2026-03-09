@@ -453,6 +453,55 @@ class WartelisteAPI:
             print(f"Fehler beim Löschen: {e}")
             return 2
     
+    def update_msg(self,msg_data):
+        try:
+            jl.edit("title",msg_data["msg_1_title"], group="msg_1")
+            jl.edit("headline",msg_data["msg_1_headline"], group="msg_1")
+            jl.edit("msg",msg_data["msg_1_msg"], group="msg_1")
+
+            jl.edit("title",msg_data["msg_2_title"], group="msg_2")
+            jl.edit("headline",msg_data["msg_2_headline"], group="msg_2")
+            jl.edit("msg",msg_data["msg_2_msg"], group="msg_2")
+
+            jl.edit("title",msg_data["msg_3_title"], group="msg_3")
+            jl.edit("headline",msg_data["msg_3_headline"], group="msg_3")
+            jl.edit("msg",msg_data["msg_3_msg"], group="msg_3")
+
+            jl.edit("title",msg_data["msg_4_title"], group="msg_4")
+            jl.edit("headline",msg_data["msg_4_headline"], group="msg_4")
+            jl.edit("msg",msg_data["msg_4_msg"], group="msg_4")
+            return True
+        
+        except Exception as e:
+            print (e)
+            return False
+    
+    def update_doc(self,doc_data):
+        try:
+            print (doc_data)
+            jl.edit("name_1",doc_data["name_1"], group="doctor")
+            jl.edit("name_2",doc_data["name_2"], group="doctor")
+            jl.edit("name_3",doc_data["name_3"], group="doctor")
+            jl.edit("name_4",doc_data["name_4"], group="doctor")
+            jl.edit("name_5",doc_data["name_5"], group="doctor")
+            jl.edit("name_6",doc_data["name_6"], group="doctor")
+            return True
+        
+        except Exception as e:
+            print (e)
+            return False
+        
+    def update_url(self,url_data):
+        try:
+            print (url_data)
+            jl.edit("queue_URL",url_data["queue_URL"])
+            return True
+        
+        except Exception as e:
+            print (e)
+            return False
+
+    
 def main():
     api = WartelisteAPI()
     window = webview.create_window(
