@@ -367,7 +367,7 @@
             </table>
         </div>
         <div class="Option-footer">
-            <button class="btn-main" onclick="saveUrl_Popup()">Save</button>
+            <button class="btn-main" onclick="saveDoc_Popup()">Save</button>
             <button class="btn-2" onclick="closeDoc_Popup()">Close</button>
         </div>
     </dialog>
@@ -377,8 +377,21 @@
             <h2>Set Queue URL:</h2>
             <input type="text" id="URL_POP_Input" placeholder="URL eingeben..." class="rounded-input">
             <div class="button-group" style="justify-content: center; gap: 20px; margin-top: 20px;">
-                <button class="btn-main" data-tooltip="Close" onclick="saveUrl_Popup()">Save</button>
+                <button class="btn-main" data-tooltip="Close" onclick="URL_update_Confirm()">Save</button>
                 <button class="btn-2" data-tooltip="Close" onclick="closeUrl_Popup()">Close</button>
+            </div>
+        </div>
+    </dialog>
+
+    <dialog id="URL_update_Confirm" class="POPUP" style="max-width: 400px; text-align: center;">
+        <div style="padding: 20px;">
+            <h2>!!ACHTUNG!!</h2>
+            <p>Möchten Sie wirklich die URL ändern?
+                Die Änderungen der URL kann dazu füren das sich die Queue nicht aktualisieren lässt.
+            </p>
+            <div class="button-group" style="justify-content: center; gap: 20px; margin-top: 20px;">
+                <button class="btn-main" data-tooltip="Save New Queue-URL" onclick="saveUrl_Popup()">Ja, URL speichern</button>
+                <button class="btn-2" data-tooltip="Cancel" onclick="closeURL_update_Confirm()">Abbrechen</button>
             </div>
         </div>
     </dialog>

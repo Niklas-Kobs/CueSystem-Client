@@ -286,6 +286,14 @@ function closeConfirmPopup() {
     document.getElementById('CONFIRM_DELETE_POP').close();
 }
 
+function URL_update_Confirm() {
+    const confirmPopup = document.getElementById('URL_update_Confirm');
+    confirmPopup.showModal();
+}
+
+function closeURL_update_Confirm() {
+    document.getElementById('URL_update_Confirm').close();
+}
 
 function executeClearAll() {
     Change = true
@@ -563,6 +571,7 @@ function closeUrl_Popup(){
 }
 
 function saveUrl_Popup(){
+    document.getElementById('URL_update_Confirm').close();
     const url_Popup = document.getElementById('URL_POP');
     queue_URL = document.getElementById('URL_POP_Input').value;
     url_data = {

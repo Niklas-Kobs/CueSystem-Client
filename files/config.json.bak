@@ -6,17 +6,17 @@
         "locked": "soft_lock",
         "Print": null,
         "MsgtoCons": 0,
-        "last_updated": "2026-03-09 19:24:45"
+        "last_updated": "2026-03-09 19:52:09"
     },
     "queue_URL": "http://192.168.0.200:55000/",
     "start_ID": 0,
     "doctor": {
-        "name_1": "Dr. Wüst",
-        "name_2": "Dr. Müller",
-        "name_3": "Dr. Smith",
-        "name_4": "Dr. Weber",
-        "name_5": "Dr. Mayer",
-        "name_6": "Dr. Bräuer"
+        "name_1": "Doc 1",
+        "name_2": "Doc 2",
+        "name_3": "Doc 3",
+        "name_4": "Doc 4",
+        "name_5": "Doc 5",
+        "name_6": "Doc 6"
     },
     "msg_1": {
         "title": "Der Patient mit der Nummer...",
