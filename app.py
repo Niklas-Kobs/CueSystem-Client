@@ -492,9 +492,15 @@ class WartelisteAPI:
             return False
         
     def update_url(self,url_data):
+        global API_IP, API_update, API_Msg, API_alive, API_execute
         try:
             print (url_data)
             jl.edit("queue_URL",url_data["queue_URL"])
+            API_IP = jl.get ("queue_URL")
+            API_update = API_IP + "/update"
+            API_Msg = API_IP + "/message"
+            API_alive = API_IP + "/alive"
+            API_execute =  API_IP +"/execute"
             return True
         
         except Exception as e:

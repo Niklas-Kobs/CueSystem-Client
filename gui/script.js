@@ -288,7 +288,14 @@ function closeConfirmPopup() {
 
 function URL_update_Confirm() {
     const confirmPopup = document.getElementById('URL_update_Confirm');
-    confirmPopup.showModal();
+    const newqueue_URL = document.getElementById('URL_POP_Input').value;
+    if (newqueue_URL !== queue_URL){
+        confirmPopup.showModal();
+    }
+    else {
+        document.getElementById('URL_update_Confirm').close();
+        document.getElementById('URL_POP').close();
+    }
 }
 
 function closeURL_update_Confirm() {
