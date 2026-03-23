@@ -327,6 +327,8 @@ class WartelisteAPI:
             except Exception as e:
                 print(f"Fehler beim Senden der Anfrage: {e}")
 
+                print ("Teeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeest")
+
             return True
         except Exception as e:
             print(f"Fehler beim Auslesen: {e}")

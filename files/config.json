@@ -6,12 +6,15 @@
         "locked": "soft_lock",
         "Print": null,
         "MsgtoCons": 0,
-        "last_updated": "2026-03-09 22:16:11"
+        "last_updated": "2026-03-21 15:40:24"
     },
     "queue_URL": "http://192.168.0.200:55000/",
-    "start_ID": 0,
-    "doctor": {
-        "name_1": "Dümmer",
+    "start_ID": 1247,
+    "nutzer": {
+        "M.Mustermann": "$2b$12$kOz8CqqPjmTAgTdvkFOyZ.kjXc65aiRyD35/l.sQY4wIYIsaOuDSu"
+    },
+        "doctor": {
+        "name_1": "Doc 1",
         "name_2": "Doc 2",
         "name_3": "Doc 3",
         "name_4": "Doc 4",
