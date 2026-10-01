@@ -521,7 +521,7 @@ def main():
         resizable=True
         )
     
-    webview.start(lambda w: w.maximize(), window, icon=Favicon_FILE, debug=True)
+    webview.start(lambda w: w.maximize(), window, debug=False)
 
 if __name__ == '__main__':
     main()
