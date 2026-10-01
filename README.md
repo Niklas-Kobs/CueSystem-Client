@@ -1,60 +1,64 @@
-Welcome to **Queue System v2.0**, a lightweight patient management and queue display solution designed to streamline waiting room management and real-time status updates!
+<img width="1280" height="640" alt="Git_Repo_Coverart-3" src="https://github.com/user-attachments/assets/9f2be600-95cd-4f68-8b60-32e94d6026d0" />
 
-Manage patient queues via a desktop GUI, synchronize data across web endpoints, and trigger live popups or status calls directly on waiting room screens.
 
----
+Welcome to **CueSystem-Client (PyWebView GUI)**, a PyWebView GUI application with local SQLite database integration and API sync capabilities for managing patient queues!
+
+This desktop application allows staff to manage patient lists, update queue positions, trigger patient calls, and sync current waiting room status to a remote display web server.
 
 ## Key Features
 
-- **Desktop GUI Management:** Native desktop interface powered by `pywebview` for managing patients and queue order.
-- **SQLite Database Backend:** Persistent storage for queue data with automatic cleanup of old entries.
-- **Real-Time Web API & Server:** Built-in Flask/Waitress server to stream live queue status (`/show`) to web interfaces.
-- **Dynamic Reordering:** Easily move patients up, down, to the top, or to the end of the queue.
-- **Popup & Call Notification System:** Send custom messages and call triggers directly to the display interface via API endpoints.
-- **Configuration Management:** Integrated configuration handling using `jsonLib`.
+* **Desktop Application Interface:** Native desktop GUI built using `pywebview`, loading local HTML/JS assets (`gui/index.html`).
 
----
+* **SQLite Database Storage:** Persists full patient records (patient ID, name, room, infos, doctor, duration, call status, timestamp) locally in `queue.db`.
 
-## Installation & Setup
+* **Full Queue Management:**
+  * Add, edit, remove, and reorder patients (move up/down, move to top, move to end).
+  * Toggle patient call/status flags (`is_called`).
+  * Automatic database cleanup of historical entries older than the current day.
 
-### Prerequisites
+* **API & Web Server Synchronization:**
+  * Synchronizes the top 5 queue positions with the central web server via HTTP POST (`/update`).
+  * Sends popup/announcement notifications (`/message`).
+  * Triggers remote execution commands (`/execute`).
+  * Live heartbeat/connectivity checks (`/alive`).
 
-Make sure you have Python installed, then install the required dependencies:
+* **Configurable Settings:** Dynamically manages system settings (API URLs, preset message templates, doctor assignments) using `jsonLib`.
 
-```bash
-pip install flask waitress pywebview requests
+## Installation & Requirements
+
+### Dependencies
+
+Ensure you have Python installed, along with the required third-party libraries:
+
 ```
-
-*(Ensure your custom `jsonLib` module is placed in the project root directory.)*
+pip install pywebview requests
+```
 
 ### Running the Application
 
-1. **Start the Web Display Server (Backend API):**
-   ```bash
-   python server.py
-   ```
-   *The server runs on port `55000` by default using Waitress.*
+To start the desktop management interface, run:
 
-2. **Start the Desktop Management App (GUI):**
-   ```bash
-   python main.py
-   ```
+```
+python app.py
+```
 
----
+## API Methods (JavaScript Bridge)
 
-## How to Use
+The `WartelisteAPI` class exposes Python methods to the JavaScript frontend via `pywebview`:
 
-1. Launch the Server and Desktop Application.
-2. **In the Desktop App:**
-   - Add new patient entries with details (ID, Name, Room, Doctor, Duration).
-   - Reorder queue entries or toggle call statuses.
-   - Click refresh/sync to send updated queue data to the web display server.
-   - Send popup notifications or pop messages to waiting room displays.
-3. **On the Waiting Room Display:**
-   - Open a browser pointing to the server root URL (`http://<server-ip>:55000/`) to view real-time patient queue updates.
+* `get_queue()` — Fetches all patient records from `queue.db`.
+* `add_full_patient(data)` — Adds a new patient entry.
+* `add_at_position(data, target_index)` — Inserts a patient at a specific position.
+* `save_patient_edit(data)` — Updates existing patient details.
+* `remove_entry(index)` — Removes a patient by index.
+* `move_entry(index, direction)` — Swaps positions up or down.
+* `move_to_top(index)` / `move_to_end(index)` — Shifts patients to top or bottom.
+* `toggle_call_status(index)` — Toggles call status (`1` / `0`).
+* `refresh()` — Reads top 5 patients from SQLite and sends update payloads to the central display API.
+* `send_message(subject, message)` — Sends emergency or status popups to the display server.
+* `update_url(url_data)` — Dynamically updates the backend API base URL.
+* `check_data()` — Cleans up entries prior to today.
 
----
+## Support & Feedback
 
-## Feedback & Bug Reporting
-
-Found an issue with queue syncing or have a feature request? Please open an issue on GitHub or contact the system administrator!
+For technical issues or configuration help, please open an issue or contact your system administrator.
